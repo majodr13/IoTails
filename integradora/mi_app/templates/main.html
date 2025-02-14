@@ -12,7 +12,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
         @font-face {
             font-family: 'BlackWild';
-            src: url('/static/fonts/Black-Wild.woff') format('woff');
+            src: url('/static/fonts/Back%20Wild.woff') format('woff');
             font-weight: normal;
             font-style: normal;
         }
@@ -32,7 +32,7 @@
 
         .logo {
             margin-right: 20px;
-            font-size: 24px;
+            font-size: 30px;
             color: rgba(255, 255, 255, 0.85);
             font-family: 'BlackWild', sans-serif;
         }
@@ -107,7 +107,7 @@
         <div class="button-container">
             <button class="button">Notificaciones</button>
             <button class="button">Perfiles</button>
-            <button class="button red">Cerrar Sesión</button>
+            <button class="button red" onclick="location.href='{% url 'login' %}'">Cerrar Sesión</button>
         </div>
     </header>
     <div class="profile-image-container">
