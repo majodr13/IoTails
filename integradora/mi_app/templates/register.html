@@ -6,6 +6,23 @@
     <title>Registro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
+
+        .register-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            width: 300px;
+            text-align: center;
+        }
+
+        @font-face {
+            font-family: 'BlackWild';
+            src: url('/static/fonts/Back%20Wild.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
             background-color: #1E2029;
             color: #ffffff;
@@ -17,48 +34,44 @@
             margin: 0;
         }
 
-        .register-container {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 40px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            width: 300px;
-            text-align: center;
-        }
-
         .logo {
-            margin-bottom: 20px; /* Espacio debajo del logo */
+            font-size: 30px;
+            color: rgba(255, 255, 255, 0.85);
+            font-family: 'BlackWild', sans-serif;
+            margin-bottom: 15px;
         }
 
         h2 {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .input-group {
             margin-bottom: 20px;
             position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 12px;
+            color: #ffffff;
+            font-size: 16px;
         }
 
         .input-group input {
             width: 100%;
-            padding: 10px;
+            padding: 10px 10px 10px 40px; /* Se añade más padding a la izquierda */
             border: none;
             border-radius: 5px;
             background-color: rgba(255, 255, 255, 0.2);
             color: #ffffff;
             font-size: 16px;
-        }
-
-        .input-group i {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #ffffff;
+            outline: none;
         }
 
         button {
-            background-color: #5183A4;
+            background-color:rgb(70, 161, 222);
             color: white;
             border: none;
             padding: 10px;
@@ -81,6 +94,7 @@
         .footer a {
             color: #ffffff;
             text-decoration: none;
+            cursor: pointer;
         }
 
         .footer a:hover {
@@ -90,7 +104,6 @@
 </head>
 <body>
     <div class="register-container">
-        <img src="{% static 'path/to/logo.png' %}" alt="Logo" class="logo"> <!-- Asegúrate de que la ruta sea correcta -->
         <h2>Registro</h2>
         <form action="{% url 'register' %}" method="post">
             {% csrf_token %}
