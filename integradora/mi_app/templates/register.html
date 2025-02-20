@@ -5,20 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
     <style>
-
-        .register-container {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 40px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            width: 300px;
-            text-align: center;
-        }
-
         @font-face {
-            font-family: 'BlackWild';
-            src: url('/static/fonts/Back%20Wild.woff') format('woff');
+            font-family: 'doggies';
+            src: url('/static/fonts/Doggies.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
         }
@@ -34,10 +25,19 @@
             margin: 0;
         }
 
+        .register-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            width: 320px;
+            text-align: center;
+        }
+
         .logo {
-            font-size: 30px;
+            font-size: 50px;
             color: rgba(255, 255, 255, 0.85);
-            font-family: 'BlackWild', sans-serif;
+            font-family: 'doggies', sans-serif;
             margin-bottom: 15px;
         }
 
@@ -104,8 +104,9 @@
 </head>
 <body>
     <div class="register-container">
+        <div class="logo">IoTails</div>
         <h2>Registro</h2>
-        <form action="{% url 'register' %}" method="post">
+        <form method="post">
             {% csrf_token %}
             <div class="input-group">
                 <i class="fas fa-user"></i>
@@ -118,10 +119,6 @@
             <div class="input-group">
                 <i class="fas fa-lock"></i>
                 <input type="password" name="password" placeholder="Contraseña" required>
-            </div>
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" name="confirm_password" placeholder="Confirmar Contraseña" required>
             </div>
             <button type="submit">Registrarse</button>
         </form>

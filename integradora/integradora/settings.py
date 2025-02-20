@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from pymongo import MongoClient
+
+# Conectar a MongoDB
+client = MongoClient("mongodb://localhost:27017/")
+db = client["bdd_IoTails"]  # base de datos
+collection = db["IoTails"]  # colección
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
