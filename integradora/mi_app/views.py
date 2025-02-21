@@ -48,6 +48,4 @@ def register_view(request):
     return render(request, "register.html", {"form": form})
 
 def main_view(request):
-    return render(request, 'main.html')
-
-    
+    return render(request, 'main.html', {"user": request.user})  

@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static '/static/fonts/Back Wild.woff' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <title>Página con Django</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
@@ -27,12 +28,14 @@
         body {
             background-color: #1E2029;
             color: #ffffff;
-            font-family: 'bloom', sans-serif;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         header {
             background-color: #1E2029;
-            padding: 10px;
+            padding: 15px 20px;
             display: flex;
             align-items: center;
         }
@@ -46,98 +49,197 @@
 
         .button-container {
             margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .button {
-            background-color: white;
-            color: black;
-            border: none;
-            padding: 10px 20px;
-            margin: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 5px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .button.red {
-            background-color: red;
+        .notification-icon {
+            font-size: 20px;
             color: white;
+            cursor: pointer;
         }
 
-        .button:hover {
-            background-color: #f0f0f0;
-            color: black;
+        .username-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
         }
 
-        .button.red:hover {
-            background-color: #ff4d4d;
+        .logout-button {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .profile-section {
+            position: relative;
+            margin: 20px;
         }
 
         .profile-image-container {
-            margin: 20px 0;
-            width: calc(100% - 40px);
-            margin-left: auto;
-            margin-right: auto;
+            position: relative;
+            width: 100%;
+            height: 300px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
         }
 
         .profile-image {
             width: 100%;
-            height: 500px;
-            border-radius: 30px;
+            height: 100%;
             object-fit: cover;
+        }
+
+        .navigation-arrows {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+    
+        .nav-arrow {
+            color: white;
+            font-size: 40px; 
+            cursor: pointer;
+            padding: 12px; 
+            border-radius: 10%; 
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+    
+        .nav-arrow:hover {
+            background: rgba(255, 255, 255, 0.6); 
+            color: #1E2029;
+            transform: scale(1.1); 
+        }
+    
+        .nav-arrow:active {
+            transform: scale(1); 
+        }
+
+        .pet-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+        
+        .pet-name {
+            color: white;
+            font-size: 28px;
+            font-weight: 500;
+            margin: 0;
+            line-height: 1.2;
+        }
+        
+        .pet-breed {
+            color: #cccccc;
+            font-size: 14px;
+            font-weight: 400;
+            margin: 0;
         }
 
         .container {
             display: flex;
-            justify-content: space-around;
-            margin: 60px 0;
+            justify-content: space-between; 
+            width: calc(100% - 40px); 
+            margin: 70px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
         }
-
+        
         .box {
-            width: 200px;
-            height: 200px;
-            padding: 20px;
-            text-align: center;
-            border-radius: 20px;
+            flex: 0 0 120px; 
+            height: 300px;
+            border-radius: 15px;
             display: flex;
+            font-family: 'bloom';
             flex-direction: column;
-            justify-content: flex-start;
-            font-size: 25px;
-            font-weight: bold;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .box img {
+            width: 300px; 
+            height: 300px;
+            margin-bottom: 10px;
+        }
+        
+        .box span {
+            font-size: 35px; 
+            font-weight: 600;
+            text-transform: uppercase;
             color: #1E2029;
         }
 
-        .box:nth-child(1) {
-            background-color: #FFE7BE;
-        }
-
-        .box:nth-child(2) {
-            background-color: #C3DDFF;
-        }
-
-        .box:nth-child(3) {
-            background-color: #FFC3C4;
-        }
+        .box:nth-child(1) { background-color: #FFE7BE; }
+        .box:nth-child(2) { background-color: #C3DDFF; }
+        .box:nth-child(3) { background-color: #FFC3C4; }
     </style>
 </head>
 <body>
     <header>
         <div class="logo">IoTails</div>
         <div class="button-container">
-            <button class="button">Notificaciones</button>
-            <button class="button">Perfiles</button>
-            <button class="button red" onclick="location.href='{% url 'login' %}'">Cerrar Sesión</button>
+            <i class="fa-solid fa-bell notification-icon"></i>
+            {% if user.is_authenticated %}
+                <button class="username-button">{{ user.username }}</button>
+            {% endif %}
+            <button class="logout-button" onclick="location.href='{% url 'login' %}'">Cerrar Sesión</button>
         </div>
     </header>
-    <div class="profile-image-container">
-        <img src="https://verdecora.es/blog/wp-content/uploads/2021/09/ejercicio-canino.jpg" alt="Imagen de perfil" class="profile-image">
+
+    <div class="profile-section">
+        <div class="profile-image-container">
+            <img src="https://www.ganador.com.mx/wp-content/uploads/2023/03/por-que-los-perros-toman-el-sol-1080x455.png" alt="Imagen de perfil" class="profile-image">
+            <div class="navigation-arrows">
+                <span class="nav-arrow">&#8249;</span>
+                <span class="nav-arrow">&#8250;</span>
+            </div>
+            <div class="pet-info">
+                <div class="pet-name">Kira</div>
+                <div class="pet-breed">Golden Retriever</div>
+            </div>
+        </div>
     </div>
     
     <div class="container">
-        <div class="box">Actividad</div>
-        <div class="box">Salud</div>
-        <div class="box">Alertas</div>
+        <div class="box">
+            <img src="{% static 'icons/location.png' %}" alt="icono mapa">
+            <span>Mapa</span>
+        </div>
+        <div class="box">
+            <img src="{% static 'icons/candado.png' %}" alt="icono seguridad">
+            <span>Seguridad</span>
+        </div>
+        <div class="box">
+            <img src="{% static 'icons/corazon.png' %}" alt="icono monitoreo">
+            <span>Cuidado</span>
+        </div>
     </div>
 </body>
 </html>
