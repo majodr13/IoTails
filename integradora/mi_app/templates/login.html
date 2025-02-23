@@ -100,6 +100,12 @@
         .footer a:hover {
             text-decoration: underline;
         }
+
+        .messages {
+            color: red;
+            list-style-type: none;
+            padding: 0;
+        }
     </style>
 </head>
 <body>
@@ -107,14 +113,20 @@
         <div class="logo">IoTails</div>
 
         <h2>Iniciar Sesión</h2>
-        {% if error_message %}
-            <p style="color: red;">{{ error_message }}</p>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="message {{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
         {% endif %}
+
         <form action="{% url 'login' %}" method="post">
             {% csrf_token %}
             <div class="input-group">
                 <i class="fas fa-user"></i>
-                <input type="text" name="username" placeholder="Usuario" required>
+                <input type="text" name="email" placeholder="Correo Electronico" required>
             </div>
             <div class="input-group">
                 <i class="fas fa-lock"></i>

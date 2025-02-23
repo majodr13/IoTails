@@ -7,26 +7,47 @@ from .forms import RegistroUsuarioForm
 from django.contrib.auth.hashers import make_password
 import pymongo
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib import messages
+
 
 client = pymongo.MongoClient("mongodb://localhost:27017")
 db = client["IoTails"]
 users_collection = db["users"]
 
+class MongoUser:
+    def __init__(self, user_data):
+        self.email = user_data['email']
+        self.first_name = user_data.get('first_name', '')
+        self.last_name = user_data.get('last_name', '')
+        self.password = user_data['password']
+        self.is_authenticated = True 
+
+    def __str__(self):
+        return self.email
+
 def login_view(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        print(f"Intentando autenticar: {username} con contraseña: {password}")  # Mensaje de depuración
-        user = authenticate(request, username=username, password=password)
-        
-        if user is not None:  # Verifica si el usuario existe
-            login(request, user)  # Inicia sesión
-            return redirect('main')  # Redirige al main si el usuario existe
-        else:
-            error_message = "El usuario no existe o la contraseña es incorrecta."
-            return render(request, 'login.html', {'error_message': error_message})
-    
-    return render(request, 'login.html')
+    if request.method == "POST":
+        email = request.POST["email"]
+        password = request.POST["password"]
+
+        # Buscar el usuario en MongoDB
+        user_data = users_collection.find_one({"email": email})
+
+        if user_data and check_password(password, user_data["password"]):  
+            user, created = User.objects.get_or_create(username=email)
+            login(request, user)
+            return redirect("main")  
+
+        elif not user_data:
+            messages.error(request, "Usuario no registrado.")
+            return render(request, "login.html")
+
+        messages.error(request, "Credenciales incorrectas.")
+        return render(request, "login.html")
+
+    return render(request, "login.html")
+
 
 def register_view(request):
     if request.method == "POST":
@@ -56,7 +77,9 @@ def register_view(request):
     return render(request, "register.html", {"form": form})
 
 def main_view(request):
-    return render(request, 'main.html', {"user": request.user})  
+    if not request.user.is_authenticated:
+        return redirect('login')
+    return render(request, 'main.html')
 
 def home_view(request):
     return render(request, 'home.html')
