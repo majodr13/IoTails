@@ -107,6 +107,9 @@
         <div class="logo">IoTails</div>
 
         <h2>Iniciar Sesión</h2>
+        {% if error_message %}
+            <p style="color: red;">{{ error_message }}</p>
+        {% endif %}
         <form action="{% url 'login' %}" method="post">
             {% csrf_token %}
             <div class="input-group">

@@ -55,7 +55,7 @@
         }
 
         .notification-icon {
-            font-size: 20px;
+            font-size: 25px;
             color: white;
             cursor: pointer;
         }
@@ -67,15 +67,6 @@
             padding: 8px 20px;
             border-radius: 20px;
             font-size: 14px;
-            cursor: pointer;
-        }
-
-        .logout-button {
-            background-color: #ff0000;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 5px;
             cursor: pointer;
         }
 
@@ -209,7 +200,6 @@
             {% if user.is_authenticated %}
                 <button class="username-button">{{ user.username }}</button>
             {% endif %}
-            <button class="logout-button" onclick="location.href='{% url 'login' %}'">Cerrar Sesión</button>
         </div>
     </header>
 
