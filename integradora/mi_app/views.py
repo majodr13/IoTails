@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import check_password
-from django.http import HttpResponse
-from .forms import RegistroUsuarioForm
+from django.http import HttpResponse, JsonResponse
+from .forms import RegistroMascotaForm, RegistroUsuarioForm
 from django.contrib.auth.hashers import make_password
 import pymongo
 from django.contrib.auth.decorators import login_required
@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 
 
-client = pymongo.MongoClient("mongodb://localhost:27017")
+client = pymongo.MongoClient("mongodb+srv://IoTails:IoTails1234@iot.gcez4.mongodb.net/")
 db = client["IoTails"]
 users_collection = db["users"]
 
@@ -83,3 +83,19 @@ def main_view(request):
 
 def home_view(request):
     return render(request, 'home.html')
+
+def form_view(request):
+    return render(request, "form.html")
+
+
+def registrar_mascota(request):
+    if request.method == "POST":
+        form = RegistroMascotaForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({"message": "Mascota registrada exitosamente"}, status=201)
+        else:
+            return JsonResponse({"error": "Error en el formulario"}, status=400)
+    else:
+        form = RegistroMascotaForm()
+    return render(request, "registro_mascota.html", {"form": form})

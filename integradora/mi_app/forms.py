@@ -1,5 +1,8 @@
 from django import forms
 
+from .models import Mascota
+
+
 class RegistroUsuarioForm(forms.Form):
     username = forms.CharField(label="Nombre de usuario", max_length=100, widget=forms.TextInput(attrs={
         "placeholder": "Usuario",
@@ -27,3 +30,17 @@ class RegistroUsuarioForm(forms.Form):
             self.add_error("confirm_password", "Las contraseñas no coinciden.")
 
         return cleaned_data
+    
+    
+class RegistroMascotaForm(forms.ModelForm):
+    imagen = forms.ImageField(required=False)
+
+    class Meta:
+        model = Mascota
+        fields = "__all__"
+
+    def clean_imagen(self):
+        imagen = self.cleaned_data.get("imagen")
+        if imagen:
+            return imagen.read()  
+        return None
