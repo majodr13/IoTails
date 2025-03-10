@@ -23,7 +23,7 @@
 
         body {
             background-color: #1E2125;
-            color: #ffffff;
+            color: rgb(255, 255, 255);
             font-family: 'altone', sans-serif;
             display: flex;
             flex-direction: column;
@@ -83,17 +83,22 @@
             padding: 14px;
             border-radius: 8px;
             border: 1px solid #4a4a4a;
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.15);
             color: #fff;
             font-size: 16px;
             outline: none;
             transition: border-color 0.3s ease, background-color 0.3s ease;
         }
 
+        .form-group select {
+            appearance: none;
+            cursor: pointer;
+        }
+
         .form-group input:focus,
         .form-group select:focus {
             border-color: #4f96b4;
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: #888;
         }
 
         .form-row {
@@ -128,23 +133,6 @@
             transform: scale(0.98);
         }
 
-        select {
-            appearance: none;
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgb(35, 34, 34);
-            padding: 10px;
-            cursor: pointer;
-        }
-
-        select option:hover {
-            background-color: #3a6c81;
-            color: #000;
-        }
-
-        form {
-            width: 100%;
-        }
-
         @media (max-width: 600px) {
             .form-row {
                 flex-direction: column;
@@ -159,7 +147,7 @@
 
     <div class="welcome-container">
         <h2>BIENVENIDO</h2>
-        <p>Ahora pasaremos a la configuración básica de tu dispositivo. Asegúrate de llenar todos los apartados.</p>
+        <p>Ahora pasaremos a el registro básico de tu mascota. Asegúrate de llenar todos los apartados.</p>
     </div>
 
     <div class="container">
