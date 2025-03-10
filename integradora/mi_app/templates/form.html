@@ -186,6 +186,16 @@
             </div>
 
             <div class="form-group">
+                <label for="petSize">Tamaño</label>
+                <select id="petSize">
+                    <option value="">Selecciona una opción</option>
+                    <option value="Raza Chica">Raza Chica</option>
+                    <option value="Raza Mediana">Raza Mediana</option>
+                    <option value="Raza Grande">Raza Grande</option>
+                </select>
+            </div>
+
+            <div class="form-group">
                 <label for="medicalProblems">Problemas médicos</label>
                 <input type="text" id="medicalProblems" placeholder="Problemas médicos (si los hay)">
             </div>
@@ -225,23 +235,51 @@
 <script>
     document.querySelector("form").addEventListener("submit", async function(event) {
         event.preventDefault();
-    
-        let formData = new FormData(this);
-    
+
+        // Obtener datos del formulario
+        let formData = {
+            petName: document.getElementById("petName").value,
+            petAge: document.getElementById("petAge").value,
+            weight: document.getElementById("weight").value,
+            phone: document.getElementById("phone").value,
+            petSize: document.getElementById("petSize").value,
+            medicalProblems: document.getElementById("medicalProblems").value,
+            street: document.getElementById("street").value,
+            colonia: document.getElementById("colonia").value,
+            number: document.getElementById("number").value,
+            pc: document.getElementById("pc").value
+        };
+
         try {
-            let response = await fetch("{% url 'registrar_mascota' %}", {
+            let response = await fetch("/registrar_mascota/", {
                 method: "POST",
-                body: formData,
                 headers: {
-                    "X-CSRFToken": "{{ csrf_token }}"
-                }
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCSRFToken()
+                },
+                body: JSON.stringify(formData)
             });
-    
+
             let result = await response.json();
             alert(result.message || result.error);
         } catch (error) {
             console.error("Error:", error);
         }
     });
-    </script>
+
+    // Obtener CSRF Token desde las cookies de Django
+    function getCSRFToken() {
+        let cookieValue = null;
+        let cookies = document.cookie.split(";");
+
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+            if (cookie.startsWith("csrftoken=")) {
+                cookieValue = cookie.substring("csrftoken=".length, cookie.length);
+                break;
+            }
+        }
+        return cookieValue;
+    }
+</script>
 </html>

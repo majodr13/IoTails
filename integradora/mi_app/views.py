@@ -9,11 +9,15 @@ import pymongo
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .db_con import pets_collection
 
 client = pymongo.MongoClient("mongodb+srv://IoTails:IoTails1234@iot.gcez4.mongodb.net/")
 db = client["IoTails"]
 users_collection = db["users"]
+pets_collection = db["pets"]
 
 class MongoUser:
     def __init__(self, user_data):
@@ -99,3 +103,42 @@ def registrar_mascota(request):
     else:
         form = RegistroMascotaForm()
     return render(request, "registro_mascota.html", {"form": form})
+
+@csrf_exempt
+def registrar_mascota(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body.decode("utf-8"))  # Convertir JSON en diccionario
+
+            # Validar que los campos esenciales no estén vacíos
+            required_fields = ["petName", "petAge", "weight", "phone", "petBreed"]
+            if any(not data.get(field) for field in required_fields):
+                return JsonResponse({"error": "Faltan campos obligatorios"}, status=400)
+
+            # Estructurar los datos para MongoDB
+            mascota = {
+                "nombre": data.get("petName"),
+                "edad": int(data.get("petAge")) if data.get("petAge") else None,
+                "peso": float(data.get("weight")) if data.get("weight") else None,
+                "telefono": data.get("phone"),
+                "tipo_mascota": data.get("petBreed"),
+                "tamano": data.get("petSize"),
+                "problemas_medicos": data.get("medicalProblems"),
+                "direccion": {
+                    "calle": data.get("street"),
+                    "colonia": data.get("colonia"),
+                    "numero": data.get("number"),
+                    "codigo_postal": data.get("pc")
+                }
+            }
+
+            pets_collection.insert_one(mascota)
+
+            return JsonResponse({"message": "Mascota registrada correctamente"}, status=201)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Datos no válidos"}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Método no permitido"}, status=405)
