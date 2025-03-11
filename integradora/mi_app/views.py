@@ -34,8 +34,6 @@ def login_view(request):
     if request.method == "POST":
         email = request.POST["email"]
         password = request.POST["password"]
-
-        # Buscar el usuario en MongoDB
         user_data = users_collection.find_one({"email": email})
 
         if user_data and check_password(password, user_data["password"]):  
@@ -52,15 +50,15 @@ def login_view(request):
 
     return render(request, "login.html")
 
-
 def register_view(request):
     if request.method == "POST":
         form = RegistroUsuarioForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data["username"]
+            username = form.cleaned_data["username"] 
             email = form.cleaned_data["email"]
             password = form.cleaned_data["password"]
 
+            # Revisar si el usuario ya existe
             existing_user = users_collection.find_one({"username": username})
             if existing_user:
                 return HttpResponse("El usuario ya existe", status=400)
@@ -68,16 +66,15 @@ def register_view(request):
             hashed_password = make_password(password)
 
             users_collection.insert_one({
-                "username": username,
+                "username": username,  
                 "email": email,
                 "password": hashed_password,
             })
 
             return redirect("login")
-
-    else:
+    else: 
         form = RegistroUsuarioForm()
-
+    
     return render(request, "register.html", {"form": form})
 
 def main_view(request):
@@ -108,14 +105,12 @@ def registrar_mascota(request):
 def registrar_mascota(request):
     if request.method == "POST":
         try:
-            data = json.loads(request.body.decode("utf-8"))  # Convertir JSON en diccionario
+            data = json.loads(request.body.decode("utf-8")) 
 
-            # Validar que los campos esenciales no estén vacíos
             required_fields = ["petName", "petAge", "weight", "phone", "petBreed"]
             if any(not data.get(field) for field in required_fields):
                 return JsonResponse({"error": "Faltan campos obligatorios"}, status=400)
 
-            # Estructurar los datos para MongoDB
             mascota = {
                 "nombre": data.get("petName"),
                 "edad": int(data.get("petAge")) if data.get("petAge") else None,
@@ -142,3 +137,7 @@ def registrar_mascota(request):
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
+
+@login_required
+def perfil_view(request):
+    return render(request, 'perfil.html')

@@ -236,7 +236,6 @@
     document.querySelector("form").addEventListener("submit", async function(event) {
         event.preventDefault();
 
-        // Obtener datos del formulario
         let formData = {
             petName: document.getElementById("petName").value,
             petAge: document.getElementById("petAge").value,
@@ -267,7 +266,6 @@
         }
     });
 
-    // Obtener CSRF Token desde las cookies de Django
     function getCSRFToken() {
         let cookieValue = null;
         let cookies = document.cookie.split(";");

@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        @font-face {
+            font-family: 'doggies';
+            src: url('/static/fonts/Doggies.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'bloom';
+            src: url('/static/fonts/bloom.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            background-color: #1E2029;
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #1E2029;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            margin-right: 20px;
+            font-size: 50px;
+            color: rgba(255, 255, 255, 0.85);
+            font-family: 'doggies', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">IoTails</div>
+        <div class="button-container">
+            <i class="fa-solid fa-bell notification-icon"></i>
+            <form action="{% url 'perfil' %}" method="GET">
+                <button type="submit" class="username-button">{{ user.username|default:user.email }}</button>
+            </form>            
+
+        </div>
+    </header>
+        
+        <div class="perfil_user">
+            <div>
+                <h1 class="h1">Sobre Mí</h1>
+                <div class="info">
+                    <label class="block">Correo</label>
+                    <input type="email" id="email" class="info_container" disabled>
+                    
+                    <label class="block">Contraseña</label>
+                    <input type="password" id="password" class="info_container" disabled>
+                    
+                    <label class="block">Dirección</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="direccion1" class="px-4 py-2 bg-gray-700 rounded-lg" disabled>
+                        <input type="text" id="direccion2" class="px-4 py-2 bg-gray-700 rounded-lg" disabled>
+                        <input type="text" id="codigo1" class="px-4 py-2 bg-gray-700 rounded-lg" disabled>
+                        <input type="text" id="codigo2" class="px-4 py-2 bg-gray-700 rounded-lg" disabled>
+                    </div>
+                </div>
+                <button class="mt-4 px-6 py-2 bg-yellow-500 text-black rounded-lg font-bold">EDITAR</button>
+            </div>
+            
+            <div>
+                <h2 class="text-2xl font-bold">MASCOTAS</h2>
+                <div class="mt-4">
+                    <table class="w-full border border-gray-700 rounded-lg overflow-hidden">
+                        <thead class="bg-gray-700">
+                            <tr>
+                                <th class="px-4 py-2">ID Collar</th>
+                                <th class="px-4 py-2">Nombre</th>
+                                <th class="px-4 py-2">Rol</th>
+                                <th class="px-4 py-2">Foto</th>
+                                <th class="px-4 py-2">Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mascotas-table">
+                            <!-- Filas generadas dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
