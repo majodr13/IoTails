@@ -6,20 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        
         @font-face {
             font-family: 'doggies';
             src: url('/static/fonts/Doggies.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
         }
 
         @font-face {
             font-family: 'bloom';
             src: url('/static/fonts/bloom.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
         }
 
         body {
@@ -31,73 +29,157 @@
         }
 
         header {
-            background-color: #1E2029;
+            background-color: #313544;
             padding: 15px 20px;
             display: flex;
             align-items: center;
+            border-radius: 0 0 50px 50px; /* le aplica un border radius a solo una parte del header */
         }
 
         .logo {
-            margin-right: 20px;
+            margin-left: auto;
             font-size: 50px;
             color: rgba(255, 255, 255, 0.85);
             font-family: 'doggies', sans-serif;
         }
+
+        .perfil_user {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            margin-top: 50px;
+            margin-left: 35px;
+        }
+
+        .info label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        .info_container {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #2C2F3A;
+            border-radius: 15px;
+            background-color: transparent;
+            color: white;
+            text-align: center;
+        }
+
+        .editar_button {
+            background-color: #F2B34A;
+            font-family: 'bloom';
+            font-size: 20px;
+            color: #1E1E1E;
+            border-radius: 10px;
+            margin-top: 20px;
+            cursor: pointer;
+            padding: 10px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .editar_button i {
+            font-size: 18px;
+        }
+
+        .table-container {
+            width: 50%;
+            margin-top: 25px;
+            margin- left: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #2C2F3A;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #444;
+        }
+
+        thead {
+            background-color: #3A3F52;
+        }
+
+        .icon-btn {
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .edit {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .delete {
+            background-color: #E74C3C;
+            color: white;
+        }
     </style>
 </head>
-
 <body>
     <header>
         <div class="logo">IoTails</div>
-        <div class="button-container">
-            <i class="fa-solid fa-bell notification-icon"></i>
-            <form action="{% url 'perfil' %}" method="GET">
-                <button type="submit" class="username-button">{{ user.username|default:user.email }}</button>
-            </form>            
-
-        </div>
     </header>
+    
+    <div class="perfil_user">
+        <div class="info-container">
+            <h1 class="text-3xl font-bold text-white"></h1>
+            <div class="info">
+                <label>Correo</label>
+                <input type="email" class="info_container" disabled>
+                
+                <label>Contraseña</label>
+                <input type="password" class="info_container" disabled>
+                
+                <label>Dirección</label>
+                <input type="text" class="info_container" disabled>
+                <input type="text" class="info_container" disabled>
+                <input type="text" class="info_container" disabled>
+                <input type="text" class="info_container" disabled>
+            </div>
+            <button class="editar_button"><i class="fas fa-edit"></i>EDITAR</button>
+        </div>
         
-        <div class="perfil_user">
-            <div>
-                <h1 class="h1">Sobre Mí</h1>
-                <div class="info">
-                    <label class="block">Correo</label>
-                    <input type="email" id="email" class="info_container" disabled>
-                    
-                    <label class="block">Contraseña</label>
-                    <input type="password" id="password" class="info_container" disabled>
-                    
-                    <label class="block">Dirección</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="direccion1" class="px-4 py-2 bg-gray-700 rounded-lg" disabled>
-                        <input type="text" id="direccion2" class="px-4 py-2 bg-gray-700 rounded-lg" disabled>
-                        <input type="text" id="codigo1" class="px-4 py-2 bg-gray-700 rounded-lg" disabled>
-                        <input type="text" id="codigo2" class="px-4 py-2 bg-gray-700 rounded-lg" disabled>
-                    </div>
-                </div>
-                <button class="mt-4 px-6 py-2 bg-yellow-500 text-black rounded-lg font-bold">EDITAR</button>
-            </div>
-            
-            <div>
-                <h2 class="text-2xl font-bold">MASCOTAS</h2>
-                <div class="mt-4">
-                    <table class="w-full border border-gray-700 rounded-lg overflow-hidden">
-                        <thead class="bg-gray-700">
-                            <tr>
-                                <th class="px-4 py-2">ID Collar</th>
-                                <th class="px-4 py-2">Nombre</th>
-                                <th class="px-4 py-2">Rol</th>
-                                <th class="px-4 py-2">Foto</th>
-                                <th class="px-4 py-2">Opciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="mascotas-table">
-                            <!-- Filas generadas dinámicamente -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Collar</th>
+                        <th>Nombre</th>
+                        <th>Rol</th>
+                        <th>Foto</th>
+                        <th>Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pet in pets %}
+                    <tr>
+                        <td>{{'pet._id' }}</td>
+                        <td>{{ pet.nombre }}</td>
+                        <td><i class="fas fa-paw"></i></td>
+                        <td><i class="fas fa-image"></i></td>
+                        <td>
+                            <button class="icon-btn edit"><i class="fas fa-pen"></i></button>
+                            <button class="icon-btn delete"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>                
+            </table>
         </div>
     </div>
 </body>

@@ -17,6 +17,7 @@ from pymongo import MongoClient
 client = MongoClient("mongodb://localhost:27017/")
 db = client["bdd_IoTails"]  # base de datos
 collection = db["IoTails"]  # colección
+PETS_COLLECTION = db["pets"]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

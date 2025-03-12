@@ -13,6 +13,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .db_con import pets_collection
+from django.conf import settings
 
 client = pymongo.MongoClient("mongodb+srv://IoTails:IoTails1234@iot.gcez4.mongodb.net/")
 db = client["IoTails"]
@@ -139,5 +140,7 @@ def registrar_mascota(request):
     return JsonResponse({"error": "Método no permitido"}, status=405)
 
 @login_required
-def perfil_view(request):
-    return render(request, 'perfil.html')
+def profile_view(request):
+    pets = list(settings.PETS_COLLECTION.find({})) 
+
+    return render(request, 'perfil.html', {"pets": pets})
