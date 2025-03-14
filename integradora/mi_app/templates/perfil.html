@@ -7,6 +7,7 @@
     <title>Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
         
@@ -43,6 +44,18 @@
             font-family: 'doggies', sans-serif;
         }
 
+        .extras {
+            font-family: 'bloom';
+            font-size: 35px;
+            margin-left: 105px;
+        }
+
+        .extras2 {
+            font-family: 'bloom';
+            font-size: 35px;
+            text-align: center;
+        }
+
         .perfil_user {
             display: flex;
             gap: 40px;
@@ -59,11 +72,16 @@
         .info_container {
             width: 100%;
             padding: 10px;
-            border: 2px solid #2C2F3A;
             border-radius: 15px;
-            background-color: transparent;
+            background-color: #3A3F52;
             color: white;
             text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .separador {
+            color:rgba(255, 255, 255, 0.61);
+
         }
 
         .editar_button {
@@ -72,10 +90,10 @@
             font-size: 20px;
             color: #1E1E1E;
             border-radius: 10px;
-            margin-top: 20px;
+            margin-top: 0 auto;
             cursor: pointer;
             padding: 10px 25px;
-            display: flex;
+            display: block;
             align-items: center;
             justify-content: center;
             gap: 10px;
@@ -89,6 +107,7 @@
             width: 50%;
             margin-top: 25px;
             margin- left: 5px;
+            margin: 10px;
         }
 
         table {
@@ -128,25 +147,38 @@
             background-color: #E74C3C;
             color: white;
         }
+
+        .material-icons {
+            margin-left: 15px;
+            font-size: 26px;
+            color:rgba(255, 255, 255, 0.59);
+        }
     </style>
 </head>
 <body>
     <header>
+        <i class="material-icons">notifications</i>
+        <i class="material-icons">favorite</i>
         <div class="logo">IoTails</div>
     </header>
     
     <div class="perfil_user">
         <div class="info-container">
-            <h1 class="text-3xl font-bold text-white"></h1>
+            <h1 class="extras">{{ user.username }}</h1>
             <div class="info">
-                <label>Correo</label>
-                <input type="email" class="info_container" disabled>
+                <label class="separador">Correo</label>
+                <input type="email" class="info_container" disabled value="{{ user.username }}">
                 
-                <label>Contraseña</label>
-                <input type="password" class="info_container" disabled>
+                <label class="separador">Contraseña</label>
+                <a href="{% url 'password_change' %}" class="editar_button">
+                    <i class="fas fa-edit"></i> Cambiar contraseña
+                </a>
                 
-                <label>Dirección</label>
-                <input type="text" class="info_container" disabled>
+                
+                <label class="separador">Dirección</label>
+                {%for pet in pets%}
+                <input type="text" class="info_container" disabled value="{{pets.direction.calle}}">
+                {%endfor%}
                 <input type="text" class="info_container" disabled>
                 <input type="text" class="info_container" disabled>
                 <input type="text" class="info_container" disabled>
@@ -155,6 +187,7 @@
         </div>
         
         <div class="table-container">
+            <h1 class="extras2">Macotas</h1>
             <table>
                 <thead>
                     <tr>
@@ -168,7 +201,7 @@
                 <tbody>
                     {% for pet in pets %}
                     <tr>
-                        <td>{{'pet._id' }}</td>
+                        <td>{{pet.id}}</td>
                         <td>{{ pet.nombre }}</td>
                         <td><i class="fas fa-paw"></i></td>
                         <td><i class="fas fa-image"></i></td>

@@ -151,10 +151,10 @@
     </div>
 
     <div class="container">
-        <form>
+        <form id="registroMascotaForm" method="post" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="petName">Nombre de la mascota</label>
-                <input type="text" id="petName" placeholder="Nombre de la mascota">
+                <label for="Nombre">Nombre de la mascota</label>
+                <input type="text" id="nombre" placeholder="Nombre de la mascota">
             </div>
 
             <div class="form-row">
@@ -176,13 +176,13 @@
             </div>
 
             <div class="form-group">
-                <label for="petBreed">Tipo de Mascota</label>
-                <select id="petBreed">
+                <label for="tipo">Tipo de Mascota</label>
+                <select id="tipo">
                     <option value="">Selecciona una opción</option>
                     <option value="Perro">Perro</option>
                     <option value="Gato">Gato</option>
                 </select>
-                <input type="text" id="otherBreed" placeholder="Especifica la raza" style="display: none;">
+                <input type="text" id="tipo" placeholder="Especifica la raza" style="display: none;">
             </div>
 
             <div class="form-group">
@@ -196,8 +196,8 @@
             </div>
 
             <div class="form-group">
-                <label for="medicalProblems">Problemas médicos</label>
-                <input type="text" id="medicalProblems" placeholder="Problemas médicos (si los hay)">
+                <label for="problemasMed">Problemas médicos</label>
+                <input type="text" id="problemasMed" placeholder="Problemas médicos (si los hay)">
             </div>
 
             <div class="form-row">
@@ -227,28 +227,32 @@
                 <input type="file" id="pic">
             </div>
 
+            <div class="form-group">
+                <label for="ownerEmail">Correo del dueño</label>
+                <input type="email" id="ownerEmail">
+            </div>
+
             <button type="submit">Registrar Mascota</button>
         </form>
     </div>
 </body>
 
 <script>
-    document.querySelector("form").addEventListener("submit", async function(event) {
+    document.getElementById("registroMascotaForm").addEventListener("submit", async function(event) {
         event.preventDefault();
-
+    
         let formData = {
-            petName: document.getElementById("petName").value,
+            nombre: document.getElementById("nombre").value,
             petAge: document.getElementById("petAge").value,
             weight: document.getElementById("weight").value,
-            phone: document.getElementById("phone").value,
+            tipo: document.getElementById("tipo").value,
             petSize: document.getElementById("petSize").value,
-            medicalProblems: document.getElementById("medicalProblems").value,
-            street: document.getElementById("street").value,
-            colonia: document.getElementById("colonia").value,
-            number: document.getElementById("number").value,
-            pc: document.getElementById("pc").value
+            problemasMed: document.getElementById("problemasMed").value,
+            ownerEmail: document.getElementById("ownerEmail").value
         };
-
+    
+        console.log("Enviando datos:", formData); 
+    
         try {
             let response = await fetch("/registrar_mascota/", {
                 method: "POST",
@@ -258,18 +262,19 @@
                 },
                 body: JSON.stringify(formData)
             });
-
+    
             let result = await response.json();
+            console.log("Respuesta del servidor:", result);
             alert(result.message || result.error);
         } catch (error) {
-            console.error("Error:", error);
+            console.error("Error al enviar la solicitud:", error);
         }
     });
-
+    
     function getCSRFToken() {
         let cookieValue = null;
         let cookies = document.cookie.split(";");
-
+    
         for (let i = 0; i < cookies.length; i++) {
             let cookie = cookies[i].trim();
             if (cookie.startsWith("csrftoken=")) {
@@ -278,6 +283,6 @@
             }
         }
         return cookieValue;
-    }
+    }       
 </script>
 </html>

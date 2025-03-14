@@ -147,11 +147,10 @@
 
         .container {
             display: flex;
-            justify-content: space-between; 
-            width: calc(100% - 40px); 
-            margin: 70px auto;
-            padding: 0 20px;
-            box-sizing: border-box;
+            justify-content: center;
+            align-items: center;
+            gap: 100px;
+            height: 60vh;
         }
         
         .box {
@@ -224,12 +223,8 @@
             <span>Mapa</span>
         </div>
         <div class="box">
-            <img src="{% static 'icons/candado.png' %}" alt="icono seguridad">
-            <span>Seguridad</span>
-        </div>
-        <div class="box">
-            <img src="{% static 'icons/corazon.png' %}" alt="icono monitoreo">
-            <span>Cuidado</span>
+            <img src="{% static 'icons/paw.png' %}" alt="icono resumen">
+            <span>Resumen</span>
         </div>
     </div>
 </body>

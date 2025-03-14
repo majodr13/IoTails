@@ -18,7 +18,6 @@ from django.conf import settings
 client = pymongo.MongoClient("mongodb+srv://IoTails:IoTails1234@iot.gcez4.mongodb.net/")
 db = client["IoTails"]
 users_collection = db["users"]
-pets_collection = db["pets"]
 
 class MongoUser:
     def __init__(self, user_data):
@@ -89,58 +88,42 @@ def home_view(request):
 def form_view(request):
     return render(request, "form.html")
 
-
 def registrar_mascota(request):
     if request.method == "POST":
+        print("request.POST:", request.POST.dict())  
+        print("request.FILES:", request.FILES) 
+
         form = RegistroMascotaForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            mascota_data = {
+                "nombre": form.cleaned_data["nombre"],
+                "edad": form.cleaned_data["petAge"],  
+                "peso": form.cleaned_data["weight"], 
+                "tipo": form.cleaned_data["tipo"],
+                "tamaño": form.cleaned_data["petSize"], 
+                "problemasMed": form.cleaned_data["problemasMed"],
+                "dueño": form.cleaned_data["ownerEmail"], 
+                "imagen": request.FILES.get("pic", None),  
+            }
+            
+            pets_collection.insert_one(mascota_data)
             return JsonResponse({"message": "Mascota registrada exitosamente"}, status=201)
         else:
-            return JsonResponse({"error": "Error en el formulario"}, status=400)
-    else:
-        form = RegistroMascotaForm()
-    return render(request, "registro_mascota.html", {"form": form})
+            print("Errores en el formulario:", form.errors)  
+            return JsonResponse({"error": str(form.errors)}, status=400)
 
-@csrf_exempt
-def registrar_mascota(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body.decode("utf-8")) 
-
-            required_fields = ["petName", "petAge", "weight", "phone", "petBreed"]
-            if any(not data.get(field) for field in required_fields):
-                return JsonResponse({"error": "Faltan campos obligatorios"}, status=400)
-
-            mascota = {
-                "nombre": data.get("petName"),
-                "edad": int(data.get("petAge")) if data.get("petAge") else None,
-                "peso": float(data.get("weight")) if data.get("weight") else None,
-                "telefono": data.get("phone"),
-                "tipo_mascota": data.get("petBreed"),
-                "tamano": data.get("petSize"),
-                "problemas_medicos": data.get("medicalProblems"),
-                "direccion": {
-                    "calle": data.get("street"),
-                    "colonia": data.get("colonia"),
-                    "numero": data.get("number"),
-                    "codigo_postal": data.get("pc")
-                }
-            }
-
-            pets_collection.insert_one(mascota)
-
-            return JsonResponse({"message": "Mascota registrada correctamente"}, status=201)
-
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Datos no válidos"}, status=400)
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
-
-    return JsonResponse({"error": "Método no permitido"}, status=405)
+    return render(request, "form.html", {"form": RegistroMascotaForm()})
 
 @login_required
 def profile_view(request):
     pets = list(settings.PETS_COLLECTION.find({})) 
 
-    return render(request, 'perfil.html', {"pets": pets})
+    return render(request, 'perfil.html', {"pets": pets, "user": request.user})
+
+
+def mapa_views(request):
+    return render(request, 'mapa.html')
+
+def cuidados_views(request):
+    return render(request, "cuidados.html")
+
