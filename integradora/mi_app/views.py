@@ -14,6 +14,12 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from .db_con import pets_collection
 from django.conf import settings
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import SensorData
+from .serializers import SensorDataSerializer
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 client = pymongo.MongoClient("mongodb+srv://IoTails:IoTails1234@iot.gcez4.mongodb.net/")
 db = client["IoTails"]
@@ -125,5 +131,21 @@ def mapa_views(request):
     return render(request, 'mapa.html')
 
 def cuidados_views(request):
-    return render(request, "cuidados.html")
+    datos_sensores = SensorData.objects.all().order_by('-fecha')[:10]  
+    return render(request, "cuidados.html", {"datos_sensores": datos_sensores})
 
+@method_decorator(csrf_exempt, name='dispatch') 
+@api_view(['POST'])
+def cuidados(request):
+    from .serializers import SensorDataSerializer  
+
+    if not request.data:
+        return Response({"error": "No se enviaron datos"}, status=400)
+
+    serializer = SensorDataSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"mensaje": "Datos guardados correctamente"}, status=201)
+
+    return Response(serializer.errors, status=400)

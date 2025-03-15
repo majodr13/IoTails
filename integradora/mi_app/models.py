@@ -18,9 +18,17 @@ class Mascota(models.Model):
     numero_exterior = models.CharField(max_length=10, blank=True, null=True)
     codigo_postal = models.CharField(max_length=10, blank=True, null=True)
     imagen = models.BinaryField(blank=True, null=True)
-    ownerEmail = models.EmailField()
+    ownerEmail = models.EmailField(default="example@email.com")
 
     def __str__(self):
         return self.nombre
+    
+class SensorData(models.Model):
+    temperatura = models.FloatField()
+    humedad = models.FloatField()
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.temperatura}°C, {self.humedad}% - {self.fecha}"
 
 
