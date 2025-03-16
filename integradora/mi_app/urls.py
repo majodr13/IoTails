@@ -12,8 +12,9 @@ urlpatterns = [
     path('registrar_mascota/', views.registrar_mascota, name='registrar_mascota'),
     path('perfil/', views.profile_view, name='perfil'),
     path('mapa/', views.mapa_views, name='mapa'),
-    path('cuidados/', views.cuidados_views, name='cuidados'),
     path('password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
     path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
     path('cuidados/', views.cuidados_views, name='cuidados'),
+    path('api/cuidados/', views.api_cuidados, name='api_cuidados'),
+    path('obtener-datos/', views.obtener_datos_sensores, name='obtener_datos'),
 ]

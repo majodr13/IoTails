@@ -1,3 +1,5 @@
+{%load static%}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -30,17 +32,42 @@
             <th>Humedad (%)</th>
             <th>Fecha</th>
         </tr>
-        {% for dato in datos_sensores %}
-        <tr>
-            <td>{{ dato.temperatura }}</td>
-            <td>{{ dato.humedad }}</td>
-            <td>{{ dato.fecha }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="3">No hay datos disponibles</td>
-        </tr>
-        {% endfor %}
+        <tbody id="tabla_datos">
+            <tr>
+                <td colspan="3">Cargando datos...</td>
+            </tr>
+        </tbody>
     </table>
 </body>
+
+<script>
+    function actualizarDatos() {
+        fetch('/obtener-datos/')  
+        .then(response => response.json())
+        .then(data => {
+            let contenido = '';
+            data.datos.forEach(d => {
+                let fechaFormato = new Date(d.fecha).toLocaleString("es-MX", {
+                    timeZone: "America/Mexico_City",  
+                    hour12: true
+                });
+
+
+
+                contenido += `<tr>
+                    <td>${d.temperatura}</td>
+                    <td>${d.humedad}</td>
+                    <td>${fechaFormato}</td>
+                </tr>`;
+            });
+
+            document.getElementById('tabla_datos').innerHTML = contenido;
+        })
+        .catch(error => console.error('Error al obtener datos:', error));
+    }
+
+    setInterval(actualizarDatos, 5000);
+
+    actualizarDatos();
+</script>
 </html>

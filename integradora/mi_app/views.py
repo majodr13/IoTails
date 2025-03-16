@@ -20,6 +20,8 @@ from .models import SensorData
 from .serializers import SensorDataSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.utils.timezone import localtime
+
 
 client = pymongo.MongoClient("mongodb+srv://IoTails:IoTails1234@iot.gcez4.mongodb.net/")
 db = client["IoTails"]
@@ -134,18 +136,25 @@ def cuidados_views(request):
     datos_sensores = SensorData.objects.all().order_by('-fecha')[:10]  
     return render(request, "cuidados.html", {"datos_sensores": datos_sensores})
 
-@method_decorator(csrf_exempt, name='dispatch') 
 @api_view(['POST'])
-def cuidados(request):
-    from .serializers import SensorDataSerializer  
-
+def api_cuidados(request):
     if not request.data:
         return Response({"error": "No se enviaron datos"}, status=400)
 
     serializer = SensorDataSerializer(data=request.data)
-
     if serializer.is_valid():
         serializer.save()
         return Response({"mensaje": "Datos guardados correctamente"}, status=201)
 
     return Response(serializer.errors, status=400)
+
+def obtener_datos_sensores(request):
+    datos = SensorData.objects.all().order_by('-fecha')[:10]
+    datos_list = []
+    for d in datos:
+        datos_list.append({
+            "temperatura": d.temperatura,
+            "humedad": d.humedad,
+            "fecha": d.fecha.strftime("%d/%m/%Y, %I:%M:%S %p"),
+        })
+    return JsonResponse({"datos": datos_list}, safe=False)
