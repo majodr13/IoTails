@@ -1,9 +1,4 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
-from db_con import db
-
-person_collection = db['users']
-# Create your models here.
 
 class Mascota(models.Model):
     nombre = models.CharField(max_length=100)
@@ -22,13 +17,17 @@ class Mascota(models.Model):
 
     def __str__(self):
         return self.nombre
-    
+
 class SensorData(models.Model):
     temperatura = models.FloatField()
     humedad = models.FloatField()
+    estado_puerta = models.CharField(
+        max_length=20,
+        choices=[("abierta", "abierta"), ("cerrada", "cerrada")],
+        default="cerrada"
+    )
     fecha = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.temperatura}°C, {self.humedad}% - {self.fecha}"
-
+        return f"{self.temperatura}°C, {self.humedad}% - {self.estado_puerta} - {self.fecha}"
 

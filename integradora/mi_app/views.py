@@ -8,8 +8,6 @@ from django.contrib.auth.hashers import make_password
 import pymongo
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib import messages
-from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .db_con import pets_collection
@@ -18,8 +16,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import SensorData
 from .serializers import SensorDataSerializer
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 from django.utils.timezone import localtime
 
 
@@ -66,7 +62,6 @@ def register_view(request):
             email = form.cleaned_data["email"]
             password = form.cleaned_data["password"]
 
-            # Revisar si el usuario ya existe
             existing_user = users_collection.find_one({"username": username})
             if existing_user:
                 return HttpResponse("El usuario ya existe", status=400)
@@ -125,9 +120,7 @@ def registrar_mascota(request):
 @login_required
 def profile_view(request):
     pets = list(settings.PETS_COLLECTION.find({})) 
-
     return render(request, 'perfil.html', {"pets": pets, "user": request.user})
-
 
 def mapa_views(request):
     return render(request, 'mapa.html')
@@ -136,12 +129,19 @@ def cuidados_views(request):
     datos_sensores = SensorData.objects.all().order_by('-fecha')[:10]  
     return render(request, "cuidados.html", {"datos_sensores": datos_sensores})
 
+# MODIFICADA PARA aceptar "estado_puerta"
 @api_view(['POST'])
 def api_cuidados(request):
     if not request.data:
         return Response({"error": "No se enviaron datos"}, status=400)
 
-    serializer = SensorDataSerializer(data=request.data)
+    data = {
+        "temperatura": request.data.get("temperatura"),
+        "humedad": request.data.get("humedad"),
+        "estado_puerta": request.data.get("estado_puerta")
+    }
+
+    serializer = SensorDataSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
         return Response({"mensaje": "Datos guardados correctamente"}, status=201)
@@ -155,6 +155,7 @@ def obtener_datos_sensores(request):
         datos_list.append({
             "temperatura": d.temperatura,
             "humedad": d.humedad,
+            "estado_puerta": d.estado_puerta,
             "fecha": d.fecha.strftime("%d/%m/%Y, %I:%M:%S %p"),
         })
     return JsonResponse({"datos": datos_list}, safe=False)

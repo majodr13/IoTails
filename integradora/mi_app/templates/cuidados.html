@@ -1,4 +1,4 @@
-{%load static%}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="es">
@@ -22,6 +22,14 @@
             background-color: #4CAF50;
             color: white;
         }
+        .estado-abierta {
+            color: green;
+            font-weight: bold;
+        }
+        .estado-cerrada {
+            color: red;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -30,11 +38,12 @@
         <tr>
             <th>Temperatura (°C)</th>
             <th>Humedad (%)</th>
+            <th>Estado de la Puerta</th>
             <th>Fecha</th>
         </tr>
         <tbody id="tabla_datos">
             <tr>
-                <td colspan="3">Cargando datos...</td>
+                <td colspan="4">Cargando datos...</td>
             </tr>
         </tbody>
     </table>
@@ -52,11 +61,13 @@
                     hour12: true
                 });
 
-
+                // Aplicar clases de color dinámicamente
+                let claseEstado = d.estado_puerta === 'abierta' ? 'estado-abierta' : 'estado-cerrada';
 
                 contenido += `<tr>
                     <td>${d.temperatura}</td>
                     <td>${d.humedad}</td>
+                    <td class="${claseEstado}">${d.estado_puerta}</td>
                     <td>${fechaFormato}</td>
                 </tr>`;
             });
@@ -67,7 +78,6 @@
     }
 
     setInterval(actualizarDatos, 5000);
-
     actualizarDatos();
 </script>
 </html>
