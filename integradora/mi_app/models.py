@@ -21,13 +21,11 @@ class Mascota(models.Model):
 class SensorData(models.Model):
     temperatura = models.FloatField()
     humedad = models.FloatField()
-    estado_puerta = models.CharField(
-        max_length=20,
-        choices=[("abierta", "abierta"), ("cerrada", "cerrada")],
-        default="cerrada"
-    )
+    estado_puerta = models.CharField(max_length=20)
+    bpm = models.IntegerField(null=True, blank=True)   # <- BPM ahora opcional
+    spo2 = models.IntegerField(null=True, blank=True)  # <- SpO2 ahora opcional
     fecha = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.temperatura}°C, {self.humedad}% - {self.estado_puerta} - {self.fecha}"
+        return f"SensorData ({self.fecha.strftime('%d/%m/%Y %H:%M:%S')})"
 

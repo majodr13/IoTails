@@ -34,19 +34,21 @@
 </head>
 <body>
     <h2>Datos de Sensores</h2>
-    <table>
+<table>
+    <tr>
+        <th>Temperatura (°C)</th>
+        <th>Humedad (%)</th>
+        <th>BPM</th>
+        <th>SpO₂ (%)</th>
+        <th>Estado de la Puerta</th>
+        <th>Fecha</th>
+    </tr>
+    <tbody id="tabla_datos">
         <tr>
-            <th>Temperatura (°C)</th>
-            <th>Humedad (%)</th>
-            <th>Estado de la Puerta</th>
-            <th>Fecha</th>
+            <td colspan="6">Cargando datos...</td>
         </tr>
-        <tbody id="tabla_datos">
-            <tr>
-                <td colspan="4">Cargando datos...</td>
-            </tr>
-        </tbody>
-    </table>
+    </tbody>
+</table>
 </body>
 
 <script>
@@ -60,24 +62,25 @@
                     timeZone: "America/Mexico_City",  
                     hour12: true
                 });
-
-                // Aplicar clases de color dinámicamente
+    
                 let claseEstado = d.estado_puerta === 'abierta' ? 'estado-abierta' : 'estado-cerrada';
-
+    
                 contenido += `<tr>
                     <td>${d.temperatura}</td>
                     <td>${d.humedad}</td>
+                    <td>${d.bpm ?? '-'}</td>
+                    <td>${d.spo2 ?? '-'}</td>
                     <td class="${claseEstado}">${d.estado_puerta}</td>
                     <td>${fechaFormato}</td>
                 </tr>`;
             });
-
+    
             document.getElementById('tabla_datos').innerHTML = contenido;
         })
         .catch(error => console.error('Error al obtener datos:', error));
     }
-
+    
     setInterval(actualizarDatos, 5000);
-    actualizarDatos();
+    actualizarDatos();    
 </script>
 </html>

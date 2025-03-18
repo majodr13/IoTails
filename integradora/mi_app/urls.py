@@ -17,4 +17,6 @@ urlpatterns = [
     path('cuidados/', views.cuidados_views, name='cuidados'),
     path('api/cuidados/', views.api_cuidados, name='api_cuidados'),
     path('obtener-datos/', views.obtener_datos_sensores, name='obtener_datos'),
+    path('api/sensores/', views.recibir_datos_resumen, name='recibir_datos_resumen'),
+    path('resumen/', views.resumen_view, name='resumen_view'),
 ]

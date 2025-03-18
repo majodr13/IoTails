@@ -138,7 +138,9 @@ def api_cuidados(request):
     data = {
         "temperatura": request.data.get("temperatura"),
         "humedad": request.data.get("humedad"),
-        "estado_puerta": request.data.get("estado_puerta")
+        "estado_puerta": request.data.get("estado_puerta"),
+        "bpm": request.data.get("bpm"),
+        "spo2": request.data.get("spo2"),
     }
 
     serializer = SensorDataSerializer(data=data)
@@ -159,3 +161,28 @@ def obtener_datos_sensores(request):
             "fecha": d.fecha.strftime("%d/%m/%Y, %I:%M:%S %p"),
         })
     return JsonResponse({"datos": datos_list}, safe=False)
+
+datos_esp32 = {}
+
+@csrf_exempt
+def recibir_datos_resumen(request):
+    global datos_esp32
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            datos_esp32 = {
+                "bpm": data.get('bpm'),
+                "spo2": data.get('spo2'),
+                "latitud": data.get('latitud'),
+                "longitud": data.get('longitud')
+            }
+            return JsonResponse({"status": "success"}, status=201)
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=400)
+    else:
+        return JsonResponse({"status": "Método no permitido"}, status=405)
+
+def resumen_view(request):
+    return render(request, 'resumen.html', {"datos": datos_esp32})
+    
+    

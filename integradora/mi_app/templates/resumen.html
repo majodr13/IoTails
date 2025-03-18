@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumen de Datos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            max-width: 500px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .dato {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .dato strong {
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Resumen de datos recibidos</h1>
+
+        {% if datos %}
+            <div class="dato"><strong>Ritmo cardíaco (BPM):</strong> {{ datos.bpm }}</div>
+            <div class="dato"><strong>Saturación de oxígeno (SpO₂):</strong> {{ datos.spo2 }} %</div>
+            <div class="dato"><strong>Latitud:</strong> {{ datos.latitud }}</div>
+            <div class="dato"><strong>Longitud:</strong> {{ datos.longitud }}</div>
+        {% else %}
+            <p style="text-align: center;">No se han recibido datos del ESP32 aún.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
