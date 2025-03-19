@@ -17,7 +17,7 @@ from pymongo import MongoClient
 client = MongoClient("mongodb://localhost:27017/")
 db = client["bdd_IoTails"]  # base de datos
 collection = db["IoTails"]  # colección
-PETS_COLLECTION = db["pets"]
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-kz1cy5gbag*aum8a4!km&*y1i3-v6+43v3l(kju1a=m)_tv5%4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', '192.168.1.67', '10.1.124.135']
+ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', '192.168.1.67', '10.1.124.135', '192.168.1.254']
 
 
 

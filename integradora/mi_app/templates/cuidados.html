@@ -62,9 +62,9 @@
                     timeZone: "America/Mexico_City",  
                     hour12: true
                 });
-    
+
                 let claseEstado = d.estado_puerta === 'abierta' ? 'estado-abierta' : 'estado-cerrada';
-    
+
                 contenido += `<tr>
                     <td>${d.temperatura}</td>
                     <td>${d.humedad}</td>
@@ -74,13 +74,13 @@
                     <td>${fechaFormato}</td>
                 </tr>`;
             });
-    
+
             document.getElementById('tabla_datos').innerHTML = contenido;
         })
         .catch(error => console.error('Error al obtener datos:', error));
     }
-    
-    setInterval(actualizarDatos, 5000);
-    actualizarDatos();    
+
+    setInterval(actualizarDatos, 3000);  // Ahora cada 3 segundos
+    actualizarDatos();
 </script>
 </html>

@@ -7,27 +7,46 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #f5f5f5;
+            background: #f0f2f5;
             padding: 20px;
         }
         .container {
-            background: #fff;
-            padding: 20px;
-            max-width: 500px;
+            background: #ffffff;
+            padding: 30px;
+            max-width: 600px;
             margin: auto;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
         }
         h1 {
-            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: #fafafa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+        .label {
+            color: #888;
+            font-weight: bold;
+        }
+        .value {
+            font-size: 1.4em;
             color: #333;
+            margin-top: 5px;
         }
-        .dato {
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
-        .dato strong {
-            color: #555;
+        .empty {
+            color: #999;
+            margin-top: 20px;
+            font-style: italic;
         }
     </style>
 </head>
@@ -35,14 +54,46 @@
     <div class="container">
         <h1>Resumen de datos recibidos</h1>
 
-        {% if datos %}
-            <div class="dato"><strong>Ritmo cardíaco (BPM):</strong> {{ datos.bpm }}</div>
-            <div class="dato"><strong>Saturación de oxígeno (SpO₂):</strong> {{ datos.spo2 }} %</div>
-            <div class="dato"><strong>Latitud:</strong> {{ datos.latitud }}</div>
-            <div class="dato"><strong>Longitud:</strong> {{ datos.longitud }}</div>
-        {% else %}
-            <p style="text-align: center;">No se han recibido datos del ESP32 aún.</p>
-        {% endif %}
+        <div class="card">
+            <div class="label">Ritmo cardíaco (BPM)</div>
+            <div class="value dato-bpm">-</div>
+        </div>
+        <div class="card">
+            <div class="label">Saturación de oxígeno (SpO₂)</div>
+            <div class="value dato-spo2">-</div>
+        </div>
+        <div class="card">
+            <div class="label">Latitud</div>
+            <div class="value dato-lat">-</div>
+        </div>
+        <div class="card">
+            <div class="label">Longitud</div>
+            <div class="value dato-lon">-</div>
+        </div>
+
+        <p class="empty" id="msg">Esperando datos del ESP32...</p>
     </div>
 </body>
+
+<script>
+    function actualizarResumen() {
+        fetch('/api/sensores/')
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.bpm !== undefined) {
+                document.getElementById('msg').style.display = "none";
+                document.querySelector('.dato-bpm').innerText = data.bpm ?? '-';
+                document.querySelector('.dato-spo2').innerText = data.spo2 ?? '-';
+                document.querySelector('.dato-lat').innerText = data.latitud ?? '-';
+                document.querySelector('.dato-lon').innerText = data.longitud ?? '-';
+            }
+        })
+        .catch(() => {
+            document.getElementById('msg').innerText = "Error obteniendo datos";
+        });
+    }
+
+    setInterval(actualizarResumen, 3000);
+    actualizarResumen();
+</script>
 </html>

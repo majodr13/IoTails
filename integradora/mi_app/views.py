@@ -17,11 +17,16 @@ from rest_framework.response import Response
 from .models import SensorData
 from .serializers import SensorDataSerializer
 from django.utils.timezone import localtime
+from django.conf import settings
 
 
 client = pymongo.MongoClient("mongodb+srv://IoTails:IoTails1234@iot.gcez4.mongodb.net/")
 db = client["IoTails"]
 users_collection = db["users"]
+pets_collection = db["pets"]
+sensor_collection = db["door"]   # <- nueva línea
+resumen_collection = db["sensors"]  # <- nueva línea
+
 
 class MongoUser:
     def __init__(self, user_data):
@@ -125,8 +130,23 @@ def profile_view(request):
 def mapa_views(request):
     return render(request, 'mapa.html')
 
+@login_required
 def cuidados_views(request):
-    datos_sensores = SensorData.objects.all().order_by('-fecha')[:10]  
+    datos_sensores = SensorData.objects.all().order_by('-fecha')[:10]
+    
+    # Guardar en MongoDB solo los campos solicitados
+    sensor_docs = []
+    for d in datos_sensores:
+        sensor_docs.append({
+            "temperatura": d.temperatura,
+            "humedad": d.humedad,
+            "estado_puerta": d.estado_puerta,
+            "fecha": d.fecha.strftime("%Y-%m-%d %H:%M:%S"),
+        })
+    
+    if sensor_docs:
+        sensor_collection.insert_many(sensor_docs)
+
     return render(request, "cuidados.html", {"datos_sensores": datos_sensores})
 
 # MODIFICADA PARA aceptar "estado_puerta"
@@ -146,6 +166,18 @@ def api_cuidados(request):
     serializer = SensorDataSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
+        
+        # AQUI VA:
+        try:
+            sensor_collection.insert_one({
+                "temperatura": data["temperatura"],
+                "humedad": data["humedad"],
+                "estado_puerta": data["estado_puerta"],
+                "fecha": localtime().strftime("%Y-%m-%d %H:%M:%S")
+            })
+        except Exception as e:
+            print("Error MongoDB:", e)
+        
         return Response({"mensaje": "Datos guardados correctamente"}, status=201)
 
     return Response(serializer.errors, status=400)
@@ -183,6 +215,16 @@ def recibir_datos_resumen(request):
         return JsonResponse({"status": "Método no permitido"}, status=405)
 
 def resumen_view(request):
+    if datos_esp32:
+        # Guardar en MongoDB
+        resumen_collection.insert_one({
+            "bpm": datos_esp32.get("bpm"),
+            "spo2": datos_esp32.get("spo2"),
+            "latitud": datos_esp32.get("latitud"),
+            "longitud": datos_esp32.get("longitud"),
+            "fecha": localtime().strftime("%Y-%m-%d %H:%M:%S")
+        })
+
     return render(request, 'resumen.html', {"datos": datos_esp32})
     
     
