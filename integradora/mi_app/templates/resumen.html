@@ -31,9 +31,6 @@
             box-shadow: 0 1px 5px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
         }
-        .card:hover {
-            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-        }
         .label {
             color: #888;
             font-weight: bold;
@@ -56,44 +53,32 @@
 
         <div class="card">
             <div class="label">Ritmo cardíaco (BPM)</div>
-            <div class="value dato-bpm">-</div>
+            <div class="value">{{ datos.bpm|default:"-" }}</div>
         </div>
         <div class="card">
             <div class="label">Saturación de oxígeno (SpO₂)</div>
-            <div class="value dato-spo2">-</div>
-        </div>
-        <div class="card">
-            <div class="label">Latitud</div>
-            <div class="value dato-lat">-</div>
-        </div>
-        <div class="card">
-            <div class="label">Longitud</div>
-            <div class="value dato-lon">-</div>
+            <div class="value">{{ datos.spo2|default:"-" }}</div>
         </div>
 
-        <p class="empty" id="msg">Esperando datos del ESP32...</p>
+        {% if datos.ubicacion == "Dentro de casa" %}
+            <div class="card">
+                <div class="label">Ubicación</div>
+                <div class="value">Dentro de casa</div>
+            </div>
+        {% else %}
+            <div class="card">
+                <div class="label">Latitud</div>
+                <div class="value">{{ datos.latitud|default:"-" }}</div>
+            </div>
+            <div class="card">
+                <div class="label">Longitud</div>
+                <div class="value">{{ datos.longitud|default:"-" }}</div>
+            </div>
+        {% endif %}
+
+        {% if not datos %}
+            <p class="empty">Esperando datos del ESP32...</p>
+        {% endif %}
     </div>
 </body>
-
-<script>
-    function actualizarResumen() {
-        fetch('/api/sensores/')
-        .then(response => response.json())
-        .then(data => {
-            if (data && data.bpm !== undefined) {
-                document.getElementById('msg').style.display = "none";
-                document.querySelector('.dato-bpm').innerText = data.bpm ?? '-';
-                document.querySelector('.dato-spo2').innerText = data.spo2 ?? '-';
-                document.querySelector('.dato-lat').innerText = data.latitud ?? '-';
-                document.querySelector('.dato-lon').innerText = data.longitud ?? '-';
-            }
-        })
-        .catch(() => {
-            document.getElementById('msg').innerText = "Error obteniendo datos";
-        });
-    }
-
-    setInterval(actualizarResumen, 3000);
-    actualizarResumen();
-</script>
 </html>
