@@ -4,26 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resumen de Datos</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #1a1b26;
-            padding: 20px;
-            color: #f5f5f5;
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        @font-face {
+            font-family: 'doggies';
+            src: url('/static/fonts/Doggies.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
         }
+    
+        @font-face {
+            font-family: 'bloom';
+            src: url('/static/fonts/bloom.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+    
+        body {
+            background-color: #1E2029;
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+    
+        header {
+            background-color: #313544;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            border-radius: 0 0 50px 50px;
+            flex-direction: row-reverse; 
+        }
+    
+        .logo-link {
+            text-decoration: none;
+        }
+    
+        .logo {
+            margin-left: auto;
+            font-size: 50px;
+            color: rgba(255, 255, 255, 0.85);
+            font-family: 'doggies', sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            cursor: pointer;
+        }
+
         .container {
             background: #24283b;
             padding: 30px;
-            max-width: 600px;
-            margin: auto;
+            max-width: 900px;
+            margin: 30px auto; 
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             text-align: center;
         }
+
         h1 {
             color: #ffffff;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            font-family:'bloom';
         }
+
         .card {
             background: #1a1b26;
             padding: 15px;
@@ -50,8 +96,14 @@
     </style>
 </head>
 <body>
+    <header>
+        <a href="{% url 'main' %}"><div class="logo">IoTails</div></a>
+        <div class="button-container">
+            <i class="fa-solid fa-bell notification-icon"></i>            
+        </div>
+    </header>
     <div class="container">
-        <h1>Resumen de datos recibidos</h1>
+        <h1>Ritmo Cardiaco y Oxigenación</h1>
 
         <div class="card">
             <div class="label">Ritmo cardíaco (BPM)</div>
@@ -62,12 +114,12 @@
             <div class="value">{{ datos.spo2|default:"-" }}</div>
         </div>
 
+        <h1>Ubicación</h1>
         <div class="card">
-            <div class="label">Ubicación</div>
             {% if datos.latitud == "0.0" or datos.longitud == "0.0" %}
                 <div class="value">Mascota dentro de casa</div>
             {% else %}
-                <div class="value">Lat: {{ datos.latitud|default:"-" }}, Lon: {{ datos.longitud|default:"-" }}</div>
+                <div class="value">{{ datos.latitud|default:"-" }}, {{ datos.longitud|default:"-" }}</div>
             {% endif %}
         </div>
 
