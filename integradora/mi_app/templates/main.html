@@ -184,11 +184,13 @@
             font-weight: 600;
             text-transform: uppercase;
             color: #1E2029;
+            margin-bottom: 15px;
         }
 
-        .box:nth-child(1) { background-color: #FFE7BE; }
-        .box:nth-child(2) { background-color: #C3DDFF; }
-        .box:nth-child(3) { background-color: #FFC3C4; }
+        .container a:nth-child(1) .box { background-color: #FFE7BE; }
+        .container a:nth-child(2) .box { background-color: #C3DDFF; }
+
+        a {text-decoration: none;}
     </style>
 </head>
 <body>
@@ -218,14 +220,18 @@
     </div>
     
     <div class="container">
-        <div class="box">
-            <img src="{% static 'icons/location.png' %}" alt="icono mapa">
-            <span>Mapa</span>
-        </div>
-        <div class="box">
-            <img src="{% static 'icons/paw.png' %}" alt="icono resumen">
-            <span>Resumen</span>
-        </div>
+        <a href="{% url 'cuidados' %}">
+            <div class="box">
+                <img src="{% static 'icons/location.png' %}" alt="icono mapa">
+                <span>Cuidados</span>
+            </div>
+        </a>
+        <a href="{%url 'resumen_view' %}">
+            <div class="box">
+                <img src="{% static 'icons/paw.png' %}" alt="icono resumen">
+                <span>Resumen</span>
+            </div>
+        </a>
     </div>
 </body>
 </html>

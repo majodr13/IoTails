@@ -7,6 +7,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Datos de Sensores</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+        @font-face {
+            font-family: 'doggies';
+            src: url('/static/fonts/Doggies.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+    
+        @font-face {
+            font-family: 'bloom';
+            src: url('/static/fonts/bloom.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+    
+        body {
+            background-color: #1E2029;
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+    
+        header {
+            background-color: #313544;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 0 0 50px 50px;
+            flex-direction: row-reverse; /* aquí está la clave! */
+        }
+    
+        .logo-link {
+            text-decoration: none;
+        }
+    
+        .logo {
+            font-size: 50px;
+            color: rgba(255, 255, 255, 0.85);
+            font-family: 'doggies', sans-serif;
+            margin: 0;
+            transition: color 0.3s ease;
+        }
+    
+        .button-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+    
+        .notification-icon {
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+        }
+    
+        /* resto igual... */
+    
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+    
         table {
             width: 100%;
             border-collapse: collapse;
@@ -14,38 +79,115 @@
             font-size: 18px;
             text-align: left;
         }
+    
         th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
+            padding: 12px 20px;
         }
+    
         th {
-            background-color: #4CAF50;
-            color: white;
+            background-color: #F2B34A;
+            color: black;
+            font-family: 'bloom';
+            text-align: center;
         }
+    
+        td {
+            text-align: center;
+        }
+    
         .estado-abierta {
             color: green;
             font-weight: bold;
         }
+    
         .estado-cerrada {
             color: red;
             font-weight: bold;
         }
-    </style>
+    
+        .tabla-actual {
+            width: 80%;
+            overflow: hidden;
+            background: #ffffff11;
+            border: 2px solid #3a3a3a;
+            border-radius: 10px;
+            max-width: 1300px;
+            margin: 80px auto;
+        }
+    
+        .tabla-historial {
+            width: 80%;
+            overflow: hidden;
+            background: #ffffff11;
+            border: 2px solid #3a3a3a;
+            border-radius: 10px;
+            max-width: 1300px;
+            margin: 30px auto;
+        }
+    
+        h2 {
+            font-family: 'doggies';
+            font-size: 60px;
+            text-align: center;
+        }
+    
+        .linea-divisoria {
+            border: none;
+            height: 2px;
+            background: #3a3a3a;
+            margin: 40px auto;
+            width: 80%;
+            border-radius: 2px;
+        }
+    
+        a {
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>        
+    
 </head>
 <body>
-    <h2>Datos de Sensores</h2>
-    <table>
+    <header>
+        <a href="{% url 'main' %}"><div class="logo">IoTails</div></a>
+        <div class="button-container">
+            <i class="fa-solid fa-bell notification-icon"></i>            
+        </div>
+    </header>
+
+    <table class="tabla-actual">
         <tr>
             <th>Temperatura (°C)</th>
             <th>Humedad (%)</th>
             <th>Estado de la Puerta</th>
             <th>Fecha</th>
         </tr>
-        <tbody id="tabla_datos">
-            <tr>
-                <td colspan="4">Cargando datos...</td>
-            </tr>
-        </tbody>
+        <tr>
+            <td>{{ datos.0.temperatura }}</td>
+            <td>{{ datos.0.humedad }}</td>
+            {% comment %} <td class="{{ 'abierta' if datos.0.estado == 'abierta' else 'cerrada' }}">{{ datos.0.estado }}</td> {% endcomment %}
+            <td>{{ datos.0.fecha }}</td>
+        </tr>
+    </table>
+
+    <hr class="linea-divisoria">
+
+    <h2>Historial</h2>
+    <table class="tabla-historial">
+        <tr>
+            <th>Temperatura (°C)</th>
+            <th>Humedad (%)</th>
+            <th>Estado de la Puerta</th>
+            <th>Fecha</th>
+        </tr>
+        {% for dato in datos|slice:"1:" %}
+        <tr>
+            <td>{{ dato.temperatura }}</td>
+            <td>{{ dato.humedad }}</td>
+            {% comment %} <td class="{{ 'abierta' if dato.estado == 'abierta' else 'cerrada' }}">{{ dato.estado }}</td> {% endcomment %}
+            <td>{{ dato.fecha }}</td>
+        </tr>
+        {% endfor %}
     </table>
 </body>
 
