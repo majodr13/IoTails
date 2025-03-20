@@ -14,6 +14,8 @@ from rest_framework.response import Response
 from .models import SensorData
 from .serializers import SensorDataSerializer
 from django.utils.timezone import now
+from django.contrib.auth import login
+
 
 client = pymongo.MongoClient("mongodb+srv://IoTails:IoTails1234@iot.gcez4.mongodb.net/")
 db = client["IoTails"]
@@ -211,4 +213,19 @@ def recibir_datos_resumen(request):
 
 def resumen_view(request):
     datos = datos_esp32 if datos_esp32 else {}
-    return render(request, 'resumen.html', {"datos": datos})
+    contexto = {}
+
+    if datos:
+        contexto["bpm"] = datos.get("bpm")
+        contexto["spo2"] = datos.get("spo2")
+
+        # Desempaquetar la ubicación
+        if "Lat:" in datos.get("ubicacion", ""):
+            coords = datos["ubicacion"].replace("Lat: ", "").replace("Lon: ", "").split(", ")
+            contexto["latitud"] = coords[0]
+            contexto["longitud"] = coords[1]
+        else:
+            contexto["latitud"] = "0.0"
+            contexto["longitud"] = "0.0"
+    
+    return render(request, 'resumen.html', {"datos": contexto})

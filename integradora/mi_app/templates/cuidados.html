@@ -34,21 +34,19 @@
 </head>
 <body>
     <h2>Datos de Sensores</h2>
-<table>
-    <tr>
-        <th>Temperatura (°C)</th>
-        <th>Humedad (%)</th>
-        <th>BPM</th>
-        <th>SpO₂ (%)</th>
-        <th>Estado de la Puerta</th>
-        <th>Fecha</th>
-    </tr>
-    <tbody id="tabla_datos">
+    <table>
         <tr>
-            <td colspan="6">Cargando datos...</td>
+            <th>Temperatura (°C)</th>
+            <th>Humedad (%)</th>
+            <th>Estado de la Puerta</th>
+            <th>Fecha</th>
         </tr>
-    </tbody>
-</table>
+        <tbody id="tabla_datos">
+            <tr>
+                <td colspan="4">Cargando datos...</td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 
 <script>
@@ -68,8 +66,6 @@
                 contenido += `<tr>
                     <td>${d.temperatura}</td>
                     <td>${d.humedad}</td>
-                    <td>${d.bpm ?? '-'}</td>
-                    <td>${d.spo2 ?? '-'}</td>
                     <td class="${claseEstado}">${d.estado_puerta}</td>
                     <td>${fechaFormato}</td>
                 </tr>`;

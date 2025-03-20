@@ -6,42 +6,44 @@
     <title>Resumen de Datos</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f0f2f5;
+            font-family: 'Poppins', sans-serif;
+            background: #1a1b26;
             padding: 20px;
+            color: #f5f5f5;
         }
         .container {
-            background: #ffffff;
+            background: #24283b;
             padding: 30px;
             max-width: 600px;
             margin: auto;
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             text-align: center;
         }
         h1 {
-            color: #2c3e50;
+            color: #ffffff;
             margin-bottom: 30px;
         }
         .card {
-            background: #fafafa;
+            background: #1a1b26;
             padding: 15px;
             margin: 10px 0;
             border-radius: 8px;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 5px rgba(0,0,0,0.3);
             transition: all 0.3s ease;
         }
         .label {
-            color: #888;
+            color: #aaa;
             font-weight: bold;
+            font-size: 1em;
         }
         .value {
-            font-size: 1.4em;
-            color: #333;
+            font-size: 1.5em;
+            color: #ffffff;
             margin-top: 5px;
         }
         .empty {
-            color: #999;
+            color: #bbb;
             margin-top: 20px;
             font-style: italic;
         }
@@ -60,21 +62,14 @@
             <div class="value">{{ datos.spo2|default:"-" }}</div>
         </div>
 
-        {% if datos.ubicacion == "Dentro de casa" %}
-            <div class="card">
-                <div class="label">Ubicación</div>
-                <div class="value">Dentro de casa</div>
-            </div>
-        {% else %}
-            <div class="card">
-                <div class="label">Latitud</div>
-                <div class="value">{{ datos.latitud|default:"-" }}</div>
-            </div>
-            <div class="card">
-                <div class="label">Longitud</div>
-                <div class="value">{{ datos.longitud|default:"-" }}</div>
-            </div>
-        {% endif %}
+        <div class="card">
+            <div class="label">Ubicación</div>
+            {% if datos.latitud == "0.0" or datos.longitud == "0.0" %}
+                <div class="value">Mascota dentro de casa</div>
+            {% else %}
+                <div class="value">Lat: {{ datos.latitud|default:"-" }}, Lon: {{ datos.longitud|default:"-" }}</div>
+            {% endif %}
+        </div>
 
         {% if not datos %}
             <p class="empty">Esperando datos del ESP32...</p>
