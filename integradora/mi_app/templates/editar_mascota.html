@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Mascota</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        @font-face {
+            font-family: 'doggies';
+            src: url('/static/fonts/Doggies.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'altone';
+            src: url('/static/fonts/altone.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'bloom';
+            src: url('/static/fonts/bloom.ttf') format('truetype');
+        }
+
+        body {
+            background-color: #1E2125;
+            color: rgb(255, 255, 255);
+            font-family: 'altone', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            font-size: 50px;
+            color: rgba(255, 255, 255, 0.85);
+            font-family: 'doggies', sans-serif;
+            margin: 40px 0;
+            width: 100%;
+            text-align: left;
+            padding-left: 50px;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 40px;
+            width: 1100px;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        h2 {
+            font-family: bloom;
+            font-size: 56px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 14px;
+            border-radius: 8px;
+            border: 1px solid #4a4a4a;
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .form-group select {
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #4f96b4;
+            background-color: #888;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        button {
+            background-color: #4f96b4;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            max-width: 300px;
+            display: block;
+            margin: 30px auto 0;
+        }
+
+        button:hover {
+            background-color: #3a6c81;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">IoTails</div>
+    </header>
+
+    <div class="container">
+        <h2>Editar Mascota</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nombre">Nombre de la mascota</label>
+                <input type="text" id="nombre" name="nombre" value="{{ mascota.nombre }}">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tipo_mascota">Tipo de Mascota</label>
+                    <select id="tipo_mascota" name="tipo_mascota">
+                        <option value="Perro" {% if mascota.tipo_mascota == 'Perro' %}selected{% endif %}>Perro</option>
+                        <option value="Gato" {% if mascota.tipo_mascota == 'Gato' %}selected{% endif %}>Gato</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="petSize">Tamaño</label>
+                    <select id="petSize" name="petSize">
+                        <option value="Raza Chica" {% if mascota.tamano == 'Raza Chica' %}selected{% endif %}>Raza Chica</option>
+                        <option value="Raza Mediana" {% if mascota.tamano == 'Raza Mediana' %}selected{% endif %}>Raza Mediana</option>
+                        <option value="Raza Grande" {% if mascota.tamano == 'Raza Grande' %}selected{% endif %}>Raza Grande</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="problemasMed">Problemas médicos</label>
+                <input type="text" id="problemasMed" name="problemas_medicos" value="{{ mascota.problemas_medicos }}">
+            </div>
+
+            <button type="submit">Guardar cambios</button>
+        </form>
+    </div>
+</body>
+
+</html>

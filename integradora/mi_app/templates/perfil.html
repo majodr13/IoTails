@@ -117,17 +117,32 @@
             overflow: hidden;
             background-color: #2C2F3A;
         }
-
+        
         th, td {
-            padding: 12px;
+            padding: 15px;
             text-align: center;
             border-bottom: 1px solid #444;
+            vertical-align: middle;
         }
-
-        thead {
+        
+        /* Centrar contenido horizontal y vertical */
+        th, td {
+            display: table-cell;
+            vertical-align: middle;
+        }
+        
+        /* Ajustar solo iconos dentro de las celdas */
+        td img, td i {
+            display: block;
+            margin: 0 auto;
+        }
+        
+        /* Encabezado */
+        thead th {
             background-color: #3A3F52;
         }
-
+        
+        /* Botones */
         .icon-btn {
             border: none;
             cursor: pointer;
@@ -137,16 +152,16 @@
             align-items: center;
             justify-content: center;
         }
-
+        
         .edit {
             background-color: #4CAF50;
             color: white;
         }
-
+        
         .delete {
             background-color: #E74C3C;
             color: white;
-        }
+        }        
 
         .material-icons {
             margin-left: 15px;
@@ -176,14 +191,24 @@
                 
                 
                 <label class="separador">Dirección</label>
-                {%for pet in pets%}
-                <input type="text" class="info_container" disabled value="{{pets.direction.calle}}">
-                {%endfor%}
-                <input type="text" class="info_container" disabled>
-                <input type="text" class="info_container" disabled>
-                <input type="text" class="info_container" disabled>
+                <form action="{% url 'editar_direccion' pets.0.id %}" method="POST">
+                    {% csrf_token %}
+                    {% if pets %}
+                        <input type="text" name="calle" class="info_container direccion-input" disabled value="{{ pets.0.direccion.calle }}">
+                        <input type="text" name="colonia" class="info_container direccion-input" disabled value="{{ pets.0.direccion.colonia }}">
+                        <input type="text" name="numero" class="info_container direccion-input" disabled value="{{ pets.0.direccion.numero }}">
+                        <input type="text" name="codigo_postal" class="info_container direccion-input" disabled value="{{ pets.0.direccion.codigo_postal }}">
+                    {% endif %}
+                    
+                    <button id="btn-guardar" type="submit" class="editar_button" style="display: none;">
+                        <i class="fas fa-save"></i> GUARDAR
+                    </button>
+                </form>
+                
+                <button id="btn-editar" class="editar_button" onclick="habilitarEdicion()">
+                    <i class="fas fa-edit"></i> EDITAR
+                </button>                            
             </div>
-            <button class="editar_button"><i class="fas fa-edit"></i>EDITAR</button>
         </div>
         
         <div class="table-container">
@@ -191,7 +216,6 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID Collar</th>
                         <th>Nombre</th>
                         <th>Rol</th>
                         <th>Foto</th>
@@ -201,19 +225,53 @@
                 <tbody>
                     {% for pet in pets %}
                     <tr>
-                        <td>{{pet.id}}</td>
                         <td>{{ pet.nombre }}</td>
-                        <td><i class="fas fa-paw"></i></td>
-                        <td><i class="fas fa-image"></i></td>
                         <td>
-                            <button class="icon-btn edit"><i class="fas fa-pen"></i></button>
-                            <button class="icon-btn delete"><i class="fas fa-trash"></i></button>
+                            {% if pet.tipo_mascota == 'Perro' %}
+                                <img src="{% static 'icons/perro.png' %}" alt="Perro" width="24">
+                            {% elif pet.tipo_mascota == 'Gato' %}
+                                <img src="{% static 'icons/gato.png' %}" alt="Gato" width="24">
+                            {% else %}
+                                <i class="fas fa-paw"></i> 
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'ver_imagen' pet.id %}">
+                                <img src="{% static 'icons/foto.png' %}" alt="Foto" width="25">
+                            </a>
+                        </td>
+                        <td>
+                            <!-- Botón de editar -->
+                            <form action="{% url 'editar_mascota' pet.id %}" method="GET" style="display: inline;">
+                                <button class="icon-btn edit">
+                                    <img src="{% static 'icons/pen.png' %}" alt="Editar" width="20">
+                                </button>
+                            </form>
+                        
+                            <!-- Botón de eliminar -->
+                            <form action="{% url 'eliminar_mascota' pet.id %}" method="POST" style="display: inline;">
+                                {% csrf_token %}
+                                <button class="icon-btn delete" onclick="return confirm('¿Estás seguro que deseas eliminar esta mascota?')">
+                                    <img src="{% static 'icons/delate.png' %}" alt="Eliminar" width="20">
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}
-                </tbody>                
+                </tbody>                                
             </table>
         </div>
     </div>
 </body>
+<script>
+    function habilitarEdicion() {
+        const inputs = document.querySelectorAll('.direccion-input');
+        const btnGuardar = document.getElementById('btn-guardar');
+        const btnEditar = document.getElementById('btn-editar');
+
+        inputs.forEach(input => input.removeAttribute('disabled'));
+        btnGuardar.style.display = 'block';
+        btnEditar.style.display = 'none';
+    }
+</script>
 </html>

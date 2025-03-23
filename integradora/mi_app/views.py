@@ -15,7 +15,9 @@ from .models import SensorData
 from .serializers import SensorDataSerializer
 from django.utils.timezone import now
 from django.contrib.auth import login
-
+import bson
+from django.views.decorators.csrf import csrf_exempt
+from bson import ObjectId
 
 client = pymongo.MongoClient("mongodb+srv://IoTails:IoTails1234@iot.gcez4.mongodb.net/")
 db = client["IoTails"]
@@ -92,30 +94,61 @@ def home_view(request):
 def form_view(request):
     return render(request, "form.html")
 
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
 def registrar_mascota(request):
     if request.method == "POST":
-        form = RegistroMascotaForm(request.POST, request.FILES)
-        if form.is_valid():
-            mascota_data = {
-                "nombre": form.cleaned_data["nombre"],
-                "edad": form.cleaned_data["petAge"],  
-                "peso": form.cleaned_data["weight"], 
-                "tipo": form.cleaned_data["tipo"],
-                "tamaño": form.cleaned_data["petSize"], 
-                "problemasMed": form.cleaned_data["problemasMed"],
-                "dueño": form.cleaned_data["ownerEmail"], 
-                "imagen": request.FILES.get("pic", None),  
-            }
-            pets_collection.insert_one(mascota_data)
-            return JsonResponse({"message": "Mascota registrada exitosamente"}, status=201)
-        else:
-            return JsonResponse({"error": str(form.errors)}, status=400)
+        nombre = request.POST.get("nombre")
+        petAge = request.POST.get("petAge")
+        weight = request.POST.get("weight")
+        tipo = request.POST.get("tipo")
+        petSize = request.POST.get("petSize")
+        problemasMed = request.POST.get("problemasMed")
+        ownerEmail = request.POST.get("ownerEmail")
+        telefono = request.POST.get("phone")
 
-    return render(request, "form.html", {"form": RegistroMascotaForm()})
+        calle = request.POST.get("street")
+        colonia = request.POST.get("colonia")
+        numero = request.POST.get("number")
+        codigo_postal = request.POST.get("pc")
+
+        pic = request.FILES.get("pic")
+
+        # Validación mínima
+        if not nombre or not tipo or not ownerEmail:
+            return JsonResponse({"error": "Campos requeridos faltantes"}, status=400)
+
+        mascota_data = {
+            "nombre": nombre,
+            "edad": int(petAge),
+            "peso": float(weight),
+            "tipo_mascota": tipo,
+            "tamano": petSize,
+            "problemas_medicos": problemasMed,
+            "ownerEmail": ownerEmail,
+            "direccion": {
+                "calle": calle,
+                "colonia": colonia,
+                "numero": numero,
+                "codigo_postal": codigo_postal
+            }
+        }
+
+        if pic:
+            mascota_data["imagen"] = pic.read()
+
+        pets_collection.insert_one(mascota_data)
+
+        return JsonResponse({"message": "Mascota registrada exitosamente"}, status=201)
+
+    return JsonResponse({"error": "Método no permitido"}, status=405)
 
 @login_required
 def profile_view(request):
-    pets = list(pets_collection.find({})) 
+    pets = list(pets_collection.find({}))
+    for pet in pets:
+        pet['id'] = str(pet['_id']) 
     return render(request, 'perfil.html', {"pets": pets, "user": request.user})
 
 def mapa_views(request):
@@ -229,3 +262,49 @@ def resumen_view(request):
             contexto["longitud"] = "0.0"
     
     return render(request, 'resumen.html', {"datos": contexto})
+
+def ver_imagen(request, pet_id):
+    pet = pets_collection.find_one({"_id": bson.ObjectId(pet_id)})
+    if pet and pet.get("imagen"):
+        return HttpResponse(pet["imagen"], content_type="image/jpeg")
+    else:
+        return HttpResponse("No image found", status=404)
+    
+
+@csrf_exempt
+def editar_direccion(request, pet_id):
+    if request.method == "POST":
+        calle = request.POST.get("calle")
+        colonia = request.POST.get("colonia")
+        numero = request.POST.get("numero")
+        codigo_postal = request.POST.get("codigo_postal")
+
+        pets_collection.update_one(
+            {"_id": bson.ObjectId(pet_id)},
+            {"$set": {
+                "direccion.calle": calle,
+                "direccion.colonia": colonia,
+                "direccion.numero": numero,
+                "direccion.codigo_postal": codigo_postal
+            }}
+        )
+
+        return redirect('profile_view')
+    
+def editar_mascota(request, pet_id):
+    pet = pets_collection.find_one({"_id": ObjectId(pet_id)})
+    if request.method == 'POST':
+        nombre = request.POST.get("nombre")
+        tipo_mascota = request.POST.get("tipo_mascota")
+        pets_collection.update_one(
+            {"_id": ObjectId(pet_id)},
+            {"$set": {"nombre": nombre, "tipo_mascota": tipo_mascota}}
+        )
+        return redirect('profile_view')
+    return render(request, 'editar_mascota.html', {'pet': pet})
+
+def eliminar_mascota(request, pet_id):
+    if request.method == 'POST':
+        pets_collection.delete_one({"_id": ObjectId(pet_id)})
+        return redirect('profile_view')
+

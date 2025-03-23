@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,17 +11,17 @@
             font-family: 'doggies';
             src: url('/static/fonts/Doggies.ttf') format('truetype');
         }
-
+    
         @font-face {
             font-family: 'altone';
             src: url('/static/fonts/altone.ttf') format('truetype');
         }
-
-        @font-face{
+    
+        @font-face {
             font-family: 'bloom';
             src: url('/static/fonts/bloom.ttf') format('truetype');
         }
-
+    
         body {
             background-color: #1E2125;
             color: rgb(255, 255, 255);
@@ -31,7 +32,7 @@
             margin: 0;
             padding: 0;
         }
-
+    
         header {
             font-size: 50px;
             color: rgba(255, 255, 255, 0.85);
@@ -41,7 +42,7 @@
             text-align: left;
             padding-left: 50px;
         }
-
+    
         .welcome-container {
             background-color: rgba(255, 255, 255, 0.15);
             border-radius: 12px;
@@ -51,7 +52,7 @@
             width: 1100px;
             margin-bottom: 40px;
         }
-
+    
         .container {
             background-color: rgba(255, 255, 255, 0.15);
             border-radius: 12px;
@@ -59,25 +60,25 @@
             width: 1100px;
             box-shadow: 0 6px 30px rgba(0, 0, 0, 0.7);
         }
-
+    
         h2 {
             font-family: bloom;
             font-size: 56px;
             text-align: center;
             margin-bottom: 20px;
         }
-
+    
         .form-group {
             display: flex;
             flex-direction: column;
             margin-bottom: 20px;
         }
-
+    
         .form-group label {
             font-size: 18px;
             margin-bottom: 8px;
         }
-
+    
         .form-group input,
         .form-group select {
             padding: 14px;
@@ -89,27 +90,27 @@
             outline: none;
             transition: border-color 0.3s ease, background-color 0.3s ease;
         }
-
+    
         .form-group select {
             appearance: none;
             cursor: pointer;
         }
-
+    
         .form-group input:focus,
         .form-group select:focus {
             border-color: #4f96b4;
             background-color: #888;
         }
-
+    
         .form-row {
             display: flex;
             gap: 15px;
         }
-
+    
         .form-row .form-group {
             flex: 1;
         }
-
+    
         button {
             background-color: #4f96b4;
             color: white;
@@ -124,15 +125,15 @@
             display: block;
             margin: 30px auto 0;
         }
-
+    
         button:hover {
             background-color: #3a6c81;
         }
-
+    
         button:active {
             transform: scale(0.98);
         }
-
+    
         @media (max-width: 600px) {
             .form-row {
                 flex-direction: column;
@@ -140,6 +141,7 @@
         }
     </style>
 </head>
+
 <body>
     <header>
         <div class="logo">IoTails</div>
@@ -176,13 +178,13 @@
             </div>
 
             <div class="form-group">
-                <label for="tipo">Tipo de Mascota</label>
-                <select id="tipo">
+                <label for="tipoMascota">Tipo de Mascota</label>
+                <select id="tipoMascota">
                     <option value="">Selecciona una opción</option>
                     <option value="Perro">Perro</option>
                     <option value="Gato">Gato</option>
                 </select>
-                <input type="text" id="tipo" placeholder="Especifica la raza" style="display: none;">
+                <input type="text" id="raza" placeholder="Especifica la raza" style="display: none;">
             </div>
 
             <div class="form-group">
@@ -235,46 +237,65 @@
             <button type="submit">Registrar Mascota</button>
         </form>
     </div>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <p style="color: #fff; font-family: altone; font-size: 20px;">Registrando mascota...</p>
+    </div>
 </body>
 
 <script>
-    document.getElementById("registroMascotaForm").addEventListener("submit", async function(event) {
+    document.getElementById("registroMascotaForm").addEventListener("submit", async function (event) {
         event.preventDefault();
-    
-        let formData = {
-            nombre: document.getElementById("nombre").value,
-            petAge: document.getElementById("petAge").value,
-            weight: document.getElementById("weight").value,
-            tipo: document.getElementById("tipo").value,
-            petSize: document.getElementById("petSize").value,
-            problemasMed: document.getElementById("problemasMed").value,
-            ownerEmail: document.getElementById("ownerEmail").value
-        };
-    
-        console.log("Enviando datos:", formData); 
-    
+
+        const camposObligatorios = [
+            { id: "nombre", nombre: "Nombre de la mascota" },
+            { id: "petAge", nombre: "Edad" },
+            { id: "weight", nombre: "Peso" },
+            { id: "tipoMascota", nombre: "Tipo de mascota" },
+            { id: "petSize", nombre: "Tamaño" },
+            { id: "ownerEmail", nombre: "Correo del dueño" }
+        ];
+
+        let camposVacios = camposObligatorios.filter(campo => {
+            return document.getElementById(campo.id).value.trim() === "";
+        });
+
+        if (camposVacios.length > 0) {
+            let nombres = camposVacios.map(c => c.nombre).join(", ");
+            alert("Por favor completa los siguientes campos: " + nombres);
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append("nombre", document.getElementById("nombre").value);
+        formData.append("petAge", document.getElementById("petAge").value);
+        formData.append("weight", document.getElementById("weight").value);
+        formData.append("tipo", document.getElementById("tipoMascota").value);
+        formData.append("petSize", document.getElementById("petSize").value);
+        formData.append("problemasMed", document.getElementById("problemasMed").value);
+        formData.append("ownerEmail", document.getElementById("ownerEmail").value);
+        formData.append("pic", document.getElementById("pic").files[0]);
+
         try {
-            let response = await fetch("/registrar_mascota/", {
+            let response = await fetch("{% url 'registrar_mascota' %}", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
                     "X-CSRFToken": getCSRFToken()
                 },
-                body: JSON.stringify(formData)
+                body: formData
             });
-    
+
             let result = await response.json();
-            console.log("Respuesta del servidor:", result);
             alert(result.message || result.error);
         } catch (error) {
-            console.error("Error al enviar la solicitud:", error);
+            alert("Error al enviar el formulario");
         }
     });
-    
+
     function getCSRFToken() {
         let cookieValue = null;
         let cookies = document.cookie.split(";");
-    
         for (let i = 0; i < cookies.length; i++) {
             let cookie = cookies[i].trim();
             if (cookie.startsWith("csrftoken=")) {
@@ -283,6 +304,6 @@
             }
         }
         return cookieValue;
-    }       
+    }
 </script>
 </html>

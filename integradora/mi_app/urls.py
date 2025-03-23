@@ -10,8 +10,12 @@ urlpatterns = [
     path('home/', views.home_view, name='home'),
     path('form/', views.form_view, name='form'),
     path('registrar_mascota/', views.registrar_mascota, name='registrar_mascota'),
-    path('perfil/', views.profile_view, name='perfil'),
+    path('perfil/', views.profile_view, name='profile_view'),
     path('mapa/', views.mapa_views, name='mapa'),
+    path('ver_imagen/<str:pet_id>/', views.ver_imagen, name='ver_imagen'),
+    path('editar_direccion/<str:pet_id>/', views.editar_direccion, name='editar_direccion'),
+    path('editar_mascota/<str:pet_id>/', views.editar_mascota, name='editar_mascota'),
+    path('eliminar_mascota/<str:pet_id>/', views.eliminar_mascota, name='eliminar_mascota'),
 
     # Password
     path('password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
