@@ -36,7 +36,7 @@
             justify-content: space-between; 
             align-items: center;
             border-radius: 0 0 50px 50px;
-        }
+        }        
         
         .logo {
             font-size: 50px;
@@ -173,16 +173,41 @@
             font-size: 26px;
             color:rgba(255, 255, 255, 0.59);
         }
+
+        .logout-btn {
+            background-color:rgb(253, 25, 25);
+            color: #fff;
+            font-weight: bold;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: 0.3s;
+        }
+    
+        .logout-btn:hover {
+            background-color: #ff3b3b;
+        }
     </style>
 </head>
 <body>
     <header>
-        <div class="button-container">
-            <i class="fa-solid fa-bell notification-icon"></i>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <form action="{% url 'login' %}" method="GET">
+                <button type="submit" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> LOGOUT
+                </button>
+            </form>
         </div>
-        <a href="{% url 'main' %}" class="logo-link">
-            <div class="logo">IoTails</div>
-        </a>
+    
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <i class="fa-solid fa-bell notification-icon"></i>
+            <a href="{% url 'main' %}" class="logo-link">
+                <div class="logo">IoTails</div>
+            </a>
+        </div>
     </header>           
     
     <div class="perfil_user">
