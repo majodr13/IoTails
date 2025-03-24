@@ -199,20 +199,21 @@
                 
                 
                 <label class="separador">Dirección</label>
+                {% if pets %}
                 <form action="{% url 'editar_direccion' pets.0.id %}" method="POST">
-                    {% csrf_token %}
-                    {% if pets %}
-                        <input type="text" name="calle" class="info_container direccion-input" disabled value="{{ pets.0.direccion.calle }}">
-                        <input type="text" name="colonia" class="info_container direccion-input" disabled value="{{ pets.0.direccion.colonia }}">
-                        <input type="text" name="numero" class="info_container direccion-input" disabled value="{{ pets.0.direccion.numero }}">
-                        <input type="text" name="codigo_postal" class="info_container direccion-input" disabled value="{{ pets.0.direccion.codigo_postal }}">
-                    {% endif %}
-                    
-                    <button id="btn-guardar" type="submit" class="editar_button" style="display: none;">
-                        <i class="fas fa-save"></i> GUARDAR
-                    </button>
+                {% csrf_token %}
+                    <input type="text" name="calle" class="info_container direccion-input" disabled value="{{ pets.0.direccion.calle }}">
+                    <input type="text" name="colonia" class="info_container direccion-input" disabled value="{{ pets.0.direccion.colonia }}">
+                    <input type="text" name="numero" class="info_container direccion-input" disabled value="{{ pets.0.direccion.numero }}">
+                    <input type="text" name="codigo_postal" class="info_container direccion-input" disabled value="{{ pets.0.direccion.codigo_postal }}">
+                <button id="btn-guardar" type="submit" class="editar_button" style="display: none;">
+                     <i class="fas fa-save"></i> GUARDAR
+                </button>
                 </form>
-                
+                {% else %}
+                    <p style="margin-top: 10px;">No tienes dirección registrada aún.</p>
+                {% endif %}
+                              
                 <button id="btn-editar" class="editar_button" onclick="habilitarEdicion()">
                     <i class="fas fa-edit"></i> EDITAR
                 </button>                            

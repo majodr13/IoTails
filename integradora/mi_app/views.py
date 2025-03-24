@@ -147,27 +147,33 @@ def registrar_mascota(request):
 
         pets_collection.insert_one(mascota_data)
 
+        # Aquí logueamos "automáticamente" si ya hay una cuenta
+        user_data = users_collection.find_one({"email": ownerEmail})
+        if user_data:
+            user, created = User.objects.get_or_create(username=ownerEmail)
+            login(request, user)
+
         return redirect('main')
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
 
 @login_required
 def profile_view(request):
-    user_email = request.session.get('user')
-    
+    user_email = request.user.username  
+
     if user_email:
-        mascotas = list(pets_collection.find({'correo_dueño': user_email}))
+        mascotas = list(pets_collection.find({'ownerEmail': user_email}))
         for mascota in mascotas:
-            mascota['_id'] = str(mascota['_id'])
+            mascota['id'] = str(mascota['_id'])  
             if 'imagen' in mascota:
-                # Convertir el Binary a base64 string
                 mascota['imagen_base64'] = base64.b64encode(mascota['imagen']).decode('utf-8')
             else:
                 mascota['imagen_base64'] = None
     else:
         mascotas = []
 
-    return render(request, 'perfil.html', {'pets': mascotas, 'user': {'username': user_email if user_email else 'Invitado'}})
+    return render(request, 'perfil.html', {'pets': mascotas, 'user': request.user})
+
 
 @login_required
 def cuidados_views(request):
@@ -305,7 +311,7 @@ def editar_direccion(request, pet_id):
             }}
         )
 
-        return redirect('profile_view')
+        return redirect('perfil')
     
 def editar_mascota(request, pet_id):
     pet = pets_collection.find_one({"_id": ObjectId(pet_id)})
@@ -316,11 +322,11 @@ def editar_mascota(request, pet_id):
             {"_id": ObjectId(pet_id)},
             {"$set": {"nombre": nombre, "tipo_mascota": tipo_mascota}}
         )
-        return redirect('profile_view')
+        return redirect('perfil')
     return render(request, 'editar_mascota.html', {'pet': pet})
 
 def eliminar_mascota(request, pet_id):
     if request.method == 'POST':
         pets_collection.delete_one({"_id": ObjectId(pet_id)})
-        return redirect('profile_view')
+        return redirect('perfil')
 

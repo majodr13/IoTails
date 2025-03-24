@@ -14,15 +14,11 @@
         @font-face {
             font-family: 'doggies';
             src: url('/static/fonts/Doggies.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
         }
 
         @font-face {
             font-family: 'bloom';
             src: url('/static/fonts/bloom.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
         }
 
         body {
@@ -100,7 +96,7 @@
             padding: 0 20px;
             box-sizing: border-box;
         }
-    
+
         .nav-arrow {
             color: white;
             font-size: 40px; 
@@ -110,15 +106,11 @@
             transition: all 0.3s ease;
             display: inline-block;
         }
-    
+
         .nav-arrow:hover {
             background: rgba(255, 255, 255, 0.6); 
             color: #1E2029;
             transform: scale(1.1); 
-        }
-    
-        .nav-arrow:active {
-            transform: scale(1); 
         }
 
         .pet-info {
@@ -129,7 +121,7 @@
             padding: 10px 15px;
             border-radius: 8px;
         }
-        
+
         .pet-name {
             color: white;
             font-size: 28px;
@@ -137,7 +129,7 @@
             margin: 0;
             line-height: 1.2;
         }
-        
+
         .pet-breed {
             color: #cccccc;
             font-size: 14px;
@@ -152,7 +144,7 @@
             gap: 100px;
             height: 60vh;
         }
-        
+
         .box {
             flex: 0 0 120px; 
             height: 300px;
@@ -167,18 +159,23 @@
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
         }
-        
+
         .box:hover {
             transform: scale(1.05);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
-        
+
         .box img {
             width: 300px; 
-            height: 300px;
+            height: 280px;
             margin-bottom: 10px;
+            transition: transform 0.3s ease;
         }
-        
+
+        .box:hover img {
+            transform: scale(1.1);
+        }
+
         .box span {
             font-size: 35px; 
             font-weight: 600;
@@ -187,10 +184,10 @@
             margin-bottom: 15px;
         }
 
-        .container a:nth-child(1) .box { background-color: #FFE7BE; }
-        .container a:nth-child(2) .box { background-color: #C3DDFF; }
+        .container a:nth-child(2) .box { background-color: #FFE7BE; }
+        .container a:nth-child(1) .box { background-color: #C3DDFF; }
 
-        a {text-decoration: none;}
+        a { text-decoration: none; }
     </style>
 </head>
 <body>
@@ -224,17 +221,18 @@
             {% endif %}
         </div>        
     </div>
-    
+
     <div class="container">
+        <!-- Aquí ya están invertidos -->
         <a href="{% url 'cuidados' %}">
             <div class="box">
-                <img src="{% static 'icons/location.png' %}" alt="icono mapa">
+                <img src="{% static 'icons/paw.png' %}" alt="icono cuidados">
                 <span>Cuidados</span>
             </div>
         </a>
         <a href="{% url 'resumen_view' %}">
             <div class="box">
-                <img src="{% static 'icons/paw.png' %}" alt="icono resumen">
+                <img src="{% static 'icons/location.png' %}" alt="icono resumen">
                 <span>Resumen</span>
             </div>
         </a>
