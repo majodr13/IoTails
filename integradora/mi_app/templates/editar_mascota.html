@@ -43,6 +43,22 @@
             padding-left: 50px;
         }
 
+        .logo-link {
+            text-decoration: none;
+        }
+    
+        .logo {
+            margin-left: auto;
+            font-size: 50px;
+            color: rgba(255, 255, 255, 0.85);
+            font-family: 'doggies', sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            cursor: pointer;
+        }
+
         .container {
             background-color: rgba(255, 255, 255, 0.15);
             border-radius: 12px;
@@ -134,7 +150,10 @@
 
 <body>
     <header>
-        <div class="logo">IoTails</div>
+        <a href="{% url 'main' %}"><div class="logo">IoTails</div></a>
+        <div class="button-container">
+            <i class="fa-solid fa-bell notification-icon"></i>            
+        </div>
     </header>
 
     <div class="container">

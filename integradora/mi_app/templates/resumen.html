@@ -1,10 +1,14 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resumen de Datos</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
         @font-face {
@@ -93,6 +97,14 @@
             margin-top: 20px;
             font-style: italic;
         }
+
+        /* Estilos del mapa */
+        #map {
+            width: 100%;
+            height: 50vh;
+            border-radius: 15px;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -102,6 +114,7 @@
             <i class="fa-solid fa-bell notification-icon"></i>            
         </div>
     </header>
+
     <div class="container">
         <h1>Ritmo Cardiaco y Oxigenación</h1>
 
@@ -116,16 +129,33 @@
 
         <h1>Ubicación</h1>
         <div class="card">
-            {% if datos.latitud == "0.0" or datos.longitud == "0.0" %}
+            {% if datos.latitud == "28.6420122" or datos.longitud == "-106.1479068" %}
                 <div class="value">Mascota dentro de casa</div>
             {% else %}
                 <div class="value">{{ datos.latitud|default:"-" }}, {{ datos.longitud|default:"-" }}</div>
             {% endif %}
         </div>
 
+        <!-- Mapa -->
+        <div id="map"></div>
+
         {% if not datos %}
             <p class="empty">Esperando datos...</p>
         {% endif %}
     </div>
+
+    <script>
+        const lat = {{ datos.latitud|default:"28.6420122" }};
+        const lon = {{ datos.longitud|default:"-106.1479068" }};
+
+        const map = L.map('map').setView([lat, lon], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const marker = L.marker([lat, lon]).addTo(map);
+        marker.bindPopup('Ubicación actual de la mascota').openPopup();
+    </script>
 </body>
 </html>

@@ -18,6 +18,9 @@ from django.contrib.auth import login
 import bson
 from django.views.decorators.csrf import csrf_exempt
 from bson import ObjectId
+import base64
+from bson import Binary
+from django.shortcuts import render, redirect
 
 client = pymongo.MongoClient("mongodb+srv://IoTails:IoTails1234@iot.gcez4.mongodb.net/")
 db = client["IoTails"]
@@ -77,16 +80,21 @@ def register_view(request):
                 "password": hashed_password,
             })
 
-            return redirect("login")
+            
+            return redirect("form") 
     else: 
         form = RegistroUsuarioForm()
     
     return render(request, "register.html", {"form": form})
 
 def main_view(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-    return render(request, 'main.html')
+    pets = list(pets_collection.find({'ownerEmail': request.user.email}))
+    
+    for pet in pets:
+        if pet.get('imagen'):
+            pet['imagen_base64'] = base64.b64encode(pet['imagen']).decode('utf-8')
+
+    return render(request, 'main.html', {'pets': pets})
 
 def home_view(request):
     return render(request, 'home.html')
@@ -115,7 +123,6 @@ def registrar_mascota(request):
 
         pic = request.FILES.get("pic")
 
-        # Validación mínima
         if not nombre or not tipo or not ownerEmail:
             return JsonResponse({"error": "Campos requeridos faltantes"}, status=400)
 
@@ -140,19 +147,27 @@ def registrar_mascota(request):
 
         pets_collection.insert_one(mascota_data)
 
-        return JsonResponse({"message": "Mascota registrada exitosamente"}, status=201)
+        return redirect('main')
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
 
 @login_required
 def profile_view(request):
-    pets = list(pets_collection.find({}))
-    for pet in pets:
-        pet['id'] = str(pet['_id']) 
-    return render(request, 'perfil.html', {"pets": pets, "user": request.user})
+    user_email = request.session.get('user')
+    
+    if user_email:
+        mascotas = list(pets_collection.find({'correo_dueño': user_email}))
+        for mascota in mascotas:
+            mascota['_id'] = str(mascota['_id'])
+            if 'imagen' in mascota:
+                # Convertir el Binary a base64 string
+                mascota['imagen_base64'] = base64.b64encode(mascota['imagen']).decode('utf-8')
+            else:
+                mascota['imagen_base64'] = None
+    else:
+        mascotas = []
 
-def mapa_views(request):
-    return render(request, 'mapa.html')
+    return render(request, 'perfil.html', {'pets': mascotas, 'user': {'username': user_email if user_email else 'Invitado'}})
 
 @login_required
 def cuidados_views(request):
@@ -252,16 +267,17 @@ def resumen_view(request):
         contexto["bpm"] = datos.get("bpm")
         contexto["spo2"] = datos.get("spo2")
 
-        # Desempaquetar la ubicación
+        # Si llegan las coordenadas reales del Neo-6M
         if "Lat:" in datos.get("ubicacion", ""):
             coords = datos["ubicacion"].replace("Lat: ", "").replace("Lon: ", "").split(", ")
             contexto["latitud"] = coords[0]
             contexto["longitud"] = coords[1]
         else:
-            contexto["latitud"] = "0.0"
-            contexto["longitud"] = "0.0"
+            contexto["latitud"] = "28.6420122"
+            contexto["longitud"] = "-106.1479068"
     
     return render(request, 'resumen.html', {"datos": contexto})
+
 
 def ver_imagen(request, pet_id):
     pet = pets_collection.find_one({"_id": bson.ObjectId(pet_id)})

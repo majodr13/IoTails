@@ -33,15 +33,24 @@
             background-color: #313544;
             padding: 15px 20px;
             display: flex;
+            justify-content: space-between; 
             align-items: center;
-            border-radius: 0 0 50px 50px; /* le aplica un border radius a solo una parte del header */
+            border-radius: 0 0 50px 50px;
         }
-
+        
         .logo {
-            margin-left: auto;
             font-size: 50px;
             color: rgba(255, 255, 255, 0.85);
             font-family: 'doggies', sans-serif;
+        }
+        
+        .logo-link {
+            text-decoration: none;
+        }
+
+        a {
+            text-decoration: none;
+            cursor: pointer;
         }
 
         .extras {
@@ -125,24 +134,20 @@
             vertical-align: middle;
         }
         
-        /* Centrar contenido horizontal y vertical */
         th, td {
             display: table-cell;
             vertical-align: middle;
         }
         
-        /* Ajustar solo iconos dentro de las celdas */
         td img, td i {
             display: block;
             margin: 0 auto;
         }
         
-        /* Encabezado */
         thead th {
             background-color: #3A3F52;
         }
         
-        /* Botones */
         .icon-btn {
             border: none;
             cursor: pointer;
@@ -172,10 +177,13 @@
 </head>
 <body>
     <header>
-        <i class="material-icons">notifications</i>
-        <i class="material-icons">favorite</i>
-        <div class="logo">IoTails</div>
-    </header>
+        <div class="button-container">
+            <i class="fa-solid fa-bell notification-icon"></i>
+        </div>
+        <a href="{% url 'main' %}" class="logo-link">
+            <div class="logo">IoTails</div>
+        </a>
+    </header>           
     
     <div class="perfil_user">
         <div class="info-container">
@@ -241,14 +249,11 @@
                             </a>
                         </td>
                         <td>
-                            <!-- Botón de editar -->
                             <form action="{% url 'editar_mascota' pet.id %}" method="GET" style="display: inline;">
                                 <button class="icon-btn edit">
                                     <img src="{% static 'icons/pen.png' %}" alt="Editar" width="20">
                                 </button>
                             </form>
-                        
-                            <!-- Botón de eliminar -->
                             <form action="{% url 'eliminar_mascota' pet.id %}" method="POST" style="display: inline;">
                                 {% csrf_token %}
                                 <button class="icon-btn delete" onclick="return confirm('¿Estás seguro que deseas eliminar esta mascota?')">

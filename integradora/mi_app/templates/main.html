@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static '/static/fonts/Back Wild.woff' %}">
+    <link rel="stylesheet" href="{% static 'fonts/Back Wild.woff' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <title>Main Page Iotails</title>
     <style>
@@ -201,22 +201,28 @@
             <form action="{% url 'perfil' %}" method="GET">
                 <button type="submit" class="username-button">{{ user.username|default:user.email }}</button>
             </form>            
-
         </div>
     </header>
 
     <div class="profile-section">
         <div class="profile-image-container">
-            <img src="https://www.ganador.com.mx/wp-content/uploads/2023/03/por-que-los-perros-toman-el-sol-1080x455.png" alt="Imagen de perfil" class="profile-image">
-            <div class="navigation-arrows">
-                <span class="nav-arrow">&#8249;</span>
-                <span class="nav-arrow">&#8250;</span>
-            </div>
-            <div class="pet-info">
-                <div class="pet-name">Kira</div>
-                <div class="pet-breed">Golden Retriever</div>
-            </div>
-        </div>
+            {% if pets %}
+                <img src="data:image/png;base64,{{ pets.0.imagen_base64 }}" alt="Imagen de mascota" class="profile-image">
+                <div class="navigation-arrows">
+                    <span class="nav-arrow">&#8249;</span>
+                    <span class="nav-arrow">&#8250;</span>
+                </div>
+                <div class="pet-info">
+                    <div class="pet-name">{{ pets.0.nombre }}</div>
+                    <div class="pet-breed">{{ pets.0.tipo_mascota }}</div>
+                </div>
+            {% else %}
+                <img src="{% static 'icons/default_pet.png' %}" alt="Sin mascota" class="profile-image">
+                <div class="pet-info">
+                    <div class="pet-name">Sin mascota</div>
+                </div>
+            {% endif %}
+        </div>        
     </div>
     
     <div class="container">
@@ -226,7 +232,7 @@
                 <span>Cuidados</span>
             </div>
         </a>
-        <a href="{%url 'resumen_view' %}">
+        <a href="{% url 'resumen_view' %}">
             <div class="box">
                 <img src="{% static 'icons/paw.png' %}" alt="icono resumen">
                 <span>Resumen</span>

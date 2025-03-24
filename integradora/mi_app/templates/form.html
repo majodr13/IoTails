@@ -285,12 +285,16 @@
                 },
                 body: formData
             });
-
-            let result = await response.json();
-            alert(result.message || result.error);
+        
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                let result = await response.json();
+                alert(result.message || result.error);
+            }
         } catch (error) {
             alert("Error al enviar el formulario");
-        }
+        }        
     });
 
     function getCSRFToken() {
