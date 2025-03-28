@@ -88,12 +88,10 @@ def register_view(request):
     return render(request, "register.html", {"form": form})
 
 def main_view(request):
-    pets = list(pets_collection.find({'ownerEmail': request.user.email}))
+    pets = list(pets_collection.find({'ownerEmail': request.user.username}))
     
     for pet in pets:
-        if pet.get('imagen'):
-            pet['imagen_base64'] = base64.b64encode(pet['imagen']).decode('utf-8')
-
+        pet['id'] = str(pet['_id']) 
     return render(request, 'main.html', {'pets': pets})
 
 def home_view(request):
@@ -286,11 +284,12 @@ def resumen_view(request):
 
 
 def ver_imagen(request, pet_id):
-    pet = pets_collection.find_one({"_id": bson.ObjectId(pet_id)})
+    pet = pets_collection.find_one({"_id": ObjectId(pet_id)})
     if pet and pet.get("imagen"):
         return HttpResponse(pet["imagen"], content_type="image/jpeg")
     else:
         return HttpResponse("No image found", status=404)
+
     
 
 @csrf_exempt
