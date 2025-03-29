@@ -11,17 +11,12 @@
         @font-face {
             font-family: 'doggies';
             src: url('/static/fonts/Doggies.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
         }
-    
         @font-face {
             font-family: 'bloom';
             src: url('/static/fonts/bloom.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
         }
-    
+
         body {
             background-color: #1E2029;
             color: #ffffff;
@@ -29,7 +24,7 @@
             margin: 0;
             padding: 0;
         }
-    
+
         header {
             background-color: #313544;
             padding: 15px 20px;
@@ -37,13 +32,13 @@
             align-items: center;
             justify-content: space-between;
             border-radius: 0 0 50px 50px;
-            flex-direction: row-reverse; /* aquí está la clave! */
+            flex-direction: row-reverse;
         }
-    
+
         .logo-link {
             text-decoration: none;
         }
-    
+
         .logo {
             font-size: 50px;
             color: rgba(255, 255, 255, 0.85);
@@ -51,27 +46,25 @@
             margin: 0;
             transition: color 0.3s ease;
         }
-    
+
         .button-container {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-    
+
         .notification-icon {
             font-size: 24px;
             color: white;
             cursor: pointer;
         }
-    
-        /* resto igual... */
-    
+
         .main-content {
             max-width: 1200px;
             margin: 0 auto;
             padding: 30px;
         }
-    
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -79,32 +72,32 @@
             font-size: 18px;
             text-align: left;
         }
-    
+
         th, td {
             padding: 12px 20px;
         }
-    
+
         th {
             background-color: #F2B34A;
             color: black;
             font-family: 'bloom';
             text-align: center;
         }
-    
+
         td {
             text-align: center;
         }
-    
+
         .estado-abierta {
-            color: green;
+            color: #00ff88;
             font-weight: bold;
         }
-    
+
         .estado-cerrada {
-            color: red;
+            color: #ff5050;
             font-weight: bold;
         }
-    
+
         .tabla-actual {
             width: 80%;
             overflow: hidden;
@@ -114,7 +107,7 @@
             max-width: 1300px;
             margin: 80px auto;
         }
-    
+
         .tabla-historial {
             width: 80%;
             overflow: hidden;
@@ -124,13 +117,13 @@
             max-width: 1300px;
             margin: 30px auto;
         }
-    
+
         h2 {
             font-family: 'doggies';
             font-size: 60px;
             text-align: center;
         }
-    
+
         .linea-divisoria {
             border: none;
             height: 2px;
@@ -139,13 +132,12 @@
             width: 80%;
             border-radius: 2px;
         }
-    
+
         a {
             text-decoration: none;
             cursor: pointer;
         }
     </style>        
-    
 </head>
 <body>
     <header>
@@ -155,6 +147,7 @@
         </div>
     </header>
 
+    <!-- Tabla con último dato -->
     <table class="tabla-actual">
         <tr>
             <th>Temperatura (°C)</th>
@@ -162,17 +155,22 @@
             <th>Estado de la Puerta</th>
             <th>Fecha</th>
         </tr>
+        {% if datos_sensores %}
         <tr>
-            <td>{{ datos.0.temperatura }}</td>
-            <td>{{ datos.0.humedad }}</td>
-            {% comment %} <td class="{{ 'abierta' if datos.0.estado == 'abierta' else 'cerrada' }}">{{ datos.0.estado }}</td> {% endcomment %}
-            <td>{{ datos.0.fecha }}</td>
+            <td>{{ datos_sensores.0.temperatura }}</td>
+            <td>{{ datos_sensores.0.humedad }}</td>
+            <td class="{% if datos_sensores.0.estado_puerta == 'abierta' %}estado-abierta{% else %}estado-cerrada{% endif %}">
+                {{ datos_sensores.0.estado_puerta }}
+            </td>
+            <td>{{ datos_sensores.0.fecha|date:"d/m/Y, h:i A" }}</td>
         </tr>
+        {% endif %}
     </table>
 
     <hr class="linea-divisoria">
 
     <h2>Historial</h2>
+
     <table class="tabla-historial">
         <tr>
             <th>Temperatura (°C)</th>
@@ -180,45 +178,16 @@
             <th>Estado de la Puerta</th>
             <th>Fecha</th>
         </tr>
-        {% for dato in datos|slice:"1:" %}
+        {% for dato in datos_sensores|slice:"1:" %}
         <tr>
             <td>{{ dato.temperatura }}</td>
             <td>{{ dato.humedad }}</td>
-            {% comment %} <td class="{{ 'abierta' if dato.estado == 'abierta' else 'cerrada' }}">{{ dato.estado }}</td> {% endcomment %}
-            <td>{{ dato.fecha }}</td>
+            <td class="{% if dato.estado_puerta == 'abierta' %}estado-abierta{% else %}estado-cerrada{% endif %}">
+                {{ dato.estado_puerta }}
+            </td>
+            <td>{{ dato.fecha|date:"d/m/Y, h:i A" }}</td>
         </tr>
         {% endfor %}
     </table>
 </body>
-
-<script>
-    function actualizarDatos() {
-        fetch('/obtener-datos/')  
-        .then(response => response.json())
-        .then(data => {
-            let contenido = '';
-            data.datos.forEach(d => {
-                let fechaFormato = new Date(d.fecha).toLocaleString("es-MX", {
-                    timeZone: "America/Mexico_City",  
-                    hour12: true
-                });
-
-                let claseEstado = d.estado_puerta === 'abierta' ? 'estado-abierta' : 'estado-cerrada';
-
-                contenido += `<tr>
-                    <td>${d.temperatura}</td>
-                    <td>${d.humedad}</td>
-                    <td class="${claseEstado}">${d.estado_puerta}</td>
-                    <td>${fechaFormato}</td>
-                </tr>`;
-            });
-
-            document.getElementById('tabla_datos').innerHTML = contenido;
-        })
-        .catch(error => console.error('Error al obtener datos:', error));
-    }
-
-    setInterval(actualizarDatos, 3000);  // Ahora cada 3 segundos
-    actualizarDatos();
-</script>
 </html>

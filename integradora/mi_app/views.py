@@ -172,22 +172,23 @@ def profile_view(request):
 
     return render(request, 'perfil.html', {'pets': mascotas, 'user': request.user})
 
-
 @login_required
 def cuidados_views(request):
-    datos_sensores = SensorData.objects.all().order_by('-fecha')[:10]
+    datos_sensores = SensorData.objects.all().order_by('-fecha')
+
     sensor_docs = []
-    for d in datos_sensores:
+    for d in datos_sensores[:10]:  # Solo los primeros 10 para historial
         sensor_docs.append({
             "temperatura": d.temperatura,
             "humedad": d.humedad,
             "estado_puerta": d.estado_puerta,
             "fecha": d.fecha.strftime("%Y-%m-%d %H:%M:%S"),
         })
-    if sensor_docs:
-        sensor_collection.insert_many(sensor_docs)
 
-    return render(request, "cuidados.html", {"datos_sensores": datos_sensores})
+    return render(request, "cuidados.html", {
+        "datos_sensores": datos_sensores  # Pasamos toda la lista ordenada
+    })
+
 
 @api_view(['POST'])
 def api_cuidados(request):
