@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -147,22 +146,20 @@
         </div>
     </header>
 
-    <!-- Tabla con último dato -->
+    <!-- Tabla con el dato más reciente -->
     <table class="tabla-actual">
         <tr>
             <th>Temperatura (°C)</th>
-            <th>Humedad (%)</th>
             <th>Estado de la Puerta</th>
             <th>Fecha</th>
         </tr>
-        {% if datos_sensores %}
+        {% if dato_actual %}
         <tr>
-            <td>{{ datos_sensores.0.temperatura }}</td>
-            <td>{{ datos_sensores.0.humedad }}</td>
-            <td class="{% if datos_sensores.0.estado_puerta == 'abierta' %}estado-abierta{% else %}estado-cerrada{% endif %}">
-                {{ datos_sensores.0.estado_puerta }}
+            <td>{{ dato_actual.temperatura }}</td>
+            <td class="{% if dato_actual.estado_puerta == 'abierta' %}estado-abierta{% else %}estado-cerrada{% endif %}">
+                {{ dato_actual.estado_puerta }}
             </td>
-            <td>{{ datos_sensores.0.fecha|date:"d/m/Y, h:i A" }}</td>
+            <td>{{ dato_actual.fecha|date:"d/m/Y, h:i A" }}</td>
         </tr>
         {% endif %}
     </table>
@@ -174,14 +171,12 @@
     <table class="tabla-historial">
         <tr>
             <th>Temperatura (°C)</th>
-            <th>Humedad (%)</th>
             <th>Estado de la Puerta</th>
             <th>Fecha</th>
         </tr>
-        {% for dato in datos_sensores|slice:"1:" %}
+        {% for dato in historial %}
         <tr>
             <td>{{ dato.temperatura }}</td>
-            <td>{{ dato.humedad }}</td>
             <td class="{% if dato.estado_puerta == 'abierta' %}estado-abierta{% else %}estado-cerrada{% endif %}">
                 {{ dato.estado_puerta }}
             </td>
@@ -190,4 +185,9 @@
         {% endfor %}
     </table>
 </body>
+<script>
+    setInterval(function() {
+        location.reload();
+    }, 3000);
+</script>
 </html>

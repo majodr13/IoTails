@@ -15,6 +15,8 @@ urlpatterns = [
     path('editar_direccion/<str:pet_id>/', views.editar_direccion, name='editar_direccion'),
     path('editar_mascota/<str:pet_id>/', views.editar_mascota, name='editar_mascota'),
     path('eliminar_mascota/<str:pet_id>/', views.eliminar_mascota, name='eliminar_mascota'),
+    path("resumen/json/", views.resumen_json, name="resumen_json"),
+
 
     # Password
     path('password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),

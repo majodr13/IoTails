@@ -21,6 +21,8 @@ from bson import ObjectId
 import base64
 from bson import Binary
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET
 
 client = pymongo.MongoClient("mongodb+srv://IoTails:IoTails1234@iot.gcez4.mongodb.net/")
 db = client["IoTails"]
@@ -175,19 +177,15 @@ def profile_view(request):
 @login_required
 def cuidados_views(request):
     datos_sensores = SensorData.objects.all().order_by('-fecha')
-
-    sensor_docs = []
-    for d in datos_sensores[:10]:  # Solo los primeros 10 para historial
-        sensor_docs.append({
-            "temperatura": d.temperatura,
-            "humedad": d.humedad,
-            "estado_puerta": d.estado_puerta,
-            "fecha": d.fecha.strftime("%Y-%m-%d %H:%M:%S"),
-        })
+    
+    dato_actual = datos_sensores.first() if datos_sensores else None
+    historial = datos_sensores[1:11] if datos_sensores.count() > 1 else []
 
     return render(request, "cuidados.html", {
-        "datos_sensores": datos_sensores  # Pasamos toda la lista ordenada
+        "dato_actual": dato_actual,
+        "historial": historial
     })
+
 
 
 @api_view(['POST'])
@@ -329,4 +327,14 @@ def eliminar_mascota(request, pet_id):
     if request.method == 'POST':
         pets_collection.delete_one({"_id": ObjectId(pet_id)})
         return redirect('perfil')
-
+    
+@require_GET
+def resumen_json(request):
+    if datos_esp32:
+        return JsonResponse({
+            "bpm": datos_esp32.get("bpm", "-"),
+            "spo2": datos_esp32.get("spo2", "-"),
+            "latitud": datos_esp32.get("ubicacion", "").replace("Lat: ", "").split(",")[0] if "Lat:" in datos_esp32.get("ubicacion", "") else "28.6420122",
+            "longitud": datos_esp32.get("ubicacion", "").replace("Lon: ", "").split(",")[-1] if "Lon:" in datos_esp32.get("ubicacion", "") else "-106.1479068"
+        })
+    return JsonResponse({"bpm": "-", "spo2": "-", "latitud": "28.6420122", "longitud": "-106.1479068"})
